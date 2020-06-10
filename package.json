@@ -1,0 +1,35 @@
+{
+  "name": "whirl",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "https://github.com/ifvictr/whirl#readme",
+  "bugs": {
+    "url": "https://github.com/ifvictr/whirl/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ifvictr/whirl.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Victor Truong",
+    "email": "victor@victortruong.com",
+    "url": "https://victortruong.com"
+  },
+  "main": "./build/index.js",
+  "scripts": {
+    "build": "yarn clean && tsc",
+    "clean": "rm -rf ./build && mkdir ./build",
+    "dev": "nodemon -r ./node_modules/dotenv/config --watch './src/**/*.ts' --exec ts-node ./src/index.ts",
+    "start": "yarn build && node ./build/index.js"
+  },
+  "dependencies": {
+    "@slack/bolt": "^2.1.1",
+    "dotenv": "^8.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.3"
+  }
+}

@@ -52,7 +52,7 @@ export default (app: App) => {
 
         // Kick remaining members if the chat size drops below 2
         const updatedMembers = await chat.getMembers()
-        if (await chat.getSize() < 2) {
+        if (updatedMembers.length < 2) {
             for (const memberId of updatedMembers) {
                 await client.chat.postMessage({
                     channel: memberId,

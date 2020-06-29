@@ -39,7 +39,6 @@ export default (app: App) => {
             })
         }
 
-        // Actually leave
         await user.leave()
 
         // Show messsage and prompt to leaving user

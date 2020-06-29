@@ -1,5 +1,6 @@
 import { App } from '@slack/bolt'
 import config from './config'
+import * as features from './features'
 
 const init = async () => {
     console.log('Starting Whirl…')
@@ -9,6 +10,15 @@ const init = async () => {
         signingSecret: config.signingSecret,
         token: config.botToken
     })
+
+    // Load feature modules
+    for (const [featureName, handler] of Object.entries(features)) {
+        handler(app)
+        console.log(`Loaded feature module: ${featureName}`)
+    }
+
+    const featuresCount = Object.keys(features).length
+    console.log(`Loaded ${featuresCount} feature${featuresCount === 1 ? '' : 's'}`)
 
     // Start receiving events
     await app.start(config.port)

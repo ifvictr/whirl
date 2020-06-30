@@ -1,4 +1,4 @@
-import { App } from '@slack/bolt'
+import { App, subtype } from '@slack/bolt'
 import { channelType } from '../middlewares'
 import { User } from '../models'
 import pool from '../pool'
@@ -71,6 +71,24 @@ export default (app: App) => {
                 username: displayName
             })
         }
+    })
+
+    app.message(channelType('im'), subtype('message_changed'), async ({ client, event }) => {
+        const user = await User.get(event.message.user)
+        if (!user) {
+            return
+        }
+
+        // Won't matter if the user isn't currently in a chat
+        if (await user.isAvailable()) {
+            return
+        }
+
+        await client.chat.postEphemeral({
+            channel: await user.getDmChannelId() as string,
+            user: event.message.user,
+            text: 'Changes to your message aren’t shown to the other members of the chat.'
+        })
     })
 
     app.action('chat_start', async ({ ack, body, client, say }) => {

@@ -2,7 +2,7 @@ import { App } from '@slack/bolt'
 import { channelType } from '../middlewares'
 import { User } from '../models'
 import pool from '../pool'
-import { capitalize, getIcon } from '../utils'
+import { capitalize, getIcon, removeSpecialTags } from '../utils'
 
 export default (app: App) => {
     app.message(channelType('im'), async ({ client, event }) => {
@@ -64,7 +64,7 @@ export default (app: App) => {
 
             await client.chat.postMessage({
                 channel: await member.getDmChannelId() as string,
-                text: event.text!,
+                text: removeSpecialTags(event.text!),
                 attachments: event.attachments,
                 // blocks: event.blocks,
                 icon_emoji: emoji,

@@ -58,7 +58,7 @@ class Chat {
     static async create() {
         const newChat = new Chat(randomatic('A0', 10))
 
-        await redis.hset(newChat.key, 'created_at', new Date().toISOString())
+        await redis.hset(newChat.key, 'created_at', Date.now() / 1000) // UNIX timestamp
 
         return newChat
     }

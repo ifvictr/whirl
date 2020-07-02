@@ -8,8 +8,8 @@ export const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.sli
 
 export const isDM = (channel: string) => channel.startsWith('D')
 
-export const getIcon = (noun: string) => nouns.includes(noun)
-    ? `:${icons[noun] ? icons[noun] : noun}:`
+export const getEmoji = (noun: string) => nouns.includes(noun)
+    ? icons[noun] ? icons[noun] : noun
     : null
 
 // Inserts zero-width non-joiner to prevent special tags like "@everyone" and "<!channel|channel>" from working

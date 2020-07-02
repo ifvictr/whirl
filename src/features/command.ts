@@ -1,7 +1,7 @@
 import { App } from '@slack/bolt'
 import { ChatPrompt } from '../blocks'
 import { User } from '../models'
-import { capitalize, getIcon } from '../utils'
+import { capitalize, getEmoji } from '../utils'
 
 export default (app: App) => {
     app.command('/next', async ({ ack, client, command, context, respond, say }) => {
@@ -26,8 +26,8 @@ export default (app: App) => {
         // Broadcast leave message to current chat
         const noun = await user.getNoun() as string
         const displayName = `Anonymous ${capitalize(noun)}`
-        const emoji = getIcon(noun)
-        const message = `${emoji} _${displayName} has left the chat._`
+        const emoji = getEmoji(noun) as string
+        const message = `:${emoji}: _${displayName} has left the chat._`
         for (const memberId of await chat.getMembers()) {
             if (memberId === command.user_id) {
                 continue

@@ -1,7 +1,7 @@
 import { App, subtype } from '@slack/bolt'
 import { channelType } from '../middlewares'
 import { User } from '../models'
-import { capitalize, getIcon, removeSpecialTags } from '../utils'
+import { capitalize, getEmoji, removeSpecialTags } from '../utils'
 
 export default (app: App) => {
     app.message(channelType('im'), async ({ client, event }) => {
@@ -48,7 +48,7 @@ export default (app: App) => {
         // Broadcast the message to other chat members
         const noun = await user.getNoun() as string
         const displayName = `Anonymous ${capitalize(noun)}`
-        const emoji = getIcon(noun) as string
+        const emoji = getEmoji(noun) as string
         for (const memberId of await currentChat.getMembers()) {
             // Don't send the message to the sender again
             if (memberId === event.user) {
@@ -66,7 +66,7 @@ export default (app: App) => {
                 text: removeSpecialTags(event.text!),
                 attachments: event.attachments,
                 // blocks: event.blocks,
-                icon_emoji: emoji,
+                icon_emoji: `${emoji}`,
                 username: displayName
             })
         }

@@ -1,7 +1,7 @@
 import { App } from '@slack/bolt'
 import { User } from '../models'
 import pool from '../pool'
-import { capitalize, getIcon } from '../utils'
+import { capitalize, getEmoji } from '../utils'
 
 export default (app: App) => {
     app.action('chat_start', async ({ ack, body, client, say }) => {
@@ -58,7 +58,7 @@ export default (app: App) => {
 
             const noun = await member.getNoun() as string
             const displayName = `Anonymous ${capitalize(noun)}`
-            const emoji = getIcon(noun)
+            const emoji = getEmoji(noun) as string
             // Send intro message to everyone but the member being introduced
             for (const otherMemberId of members) {
                 if (otherMemberId === memberId) {
@@ -66,7 +66,7 @@ export default (app: App) => {
                 }
                 await client.chat.postMessage({
                     channel: otherMemberId,
-                    text: `You are now talking to ${emoji ? emoji + ' ' : ''}*${displayName}*. Say hi!`
+                    text: `You are now talking to :${emoji}: *${displayName}*. Say hi!`
                 })
             }
         }

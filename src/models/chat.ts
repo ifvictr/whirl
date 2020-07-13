@@ -42,8 +42,8 @@ class Chat {
     async removeMember(userId: string) {
         return redis.multi()
             .srem(`${this.key}:members`, userId)
-            .hset(`user:${userId}`, 'chat_id', '')
-            .hset(`user:${userId}`, 'noun', '')
+            .hdel(`user:${userId}`, 'chat_id')
+            .hdel(`user:${userId}`, 'noun')
             .exec()
     }
 

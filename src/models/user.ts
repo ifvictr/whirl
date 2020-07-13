@@ -32,7 +32,7 @@ class User {
     }
 
     async isAvailable() {
-        return await redis.hget(this.key, 'chat_id') === ''
+        return !await redis.hexists(this.key, 'chat_id')
     }
 
     async isInPool() {
@@ -51,12 +51,7 @@ class User {
 
     static async create(userId: string, dmChannelId: string) {
         const newUser = new User(userId)
-
-        await redis.multi()
-            .hset(newUser.key, 'chat_id', '')
-            .hset(newUser.key, 'dm_channel_id', dmChannelId)
-            .hset(newUser.key, 'noun', '')
-            .exec()
+        await redis.hset(newUser.key, 'dm_channel_id', dmChannelId)
 
         return newUser
     }

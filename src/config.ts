@@ -1,11 +1,11 @@
-interface WhirlConfig {
+interface Config {
     port: number
     redisUrl: string
     botToken?: string
     signingSecret?: string
 }
 
-const config: WhirlConfig = {
+const config: Config = {
     port: parseInt(process.env.PORT || '') || 3000,
     redisUrl: process.env.REDIS_URL || '',
     // Slack-specific config

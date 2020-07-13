@@ -51,10 +51,7 @@ export default (app: App) => {
         const members = await chat.getMembers()
         // Loop over all the identities of the chat members
         for (const memberId of members) {
-            const member = await User.get(memberId)
-            if (!member) {
-                continue
-            }
+            const member = await User.get(memberId) as User
 
             const noun = await member.getNoun() as string
             const displayName = `Anonymous ${capitalize(noun)}`

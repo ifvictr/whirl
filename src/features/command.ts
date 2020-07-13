@@ -1,6 +1,6 @@
 import { App } from '@slack/bolt'
 import { ChatPrompt } from '../blocks'
-import { User } from '../models'
+import { Chat, User } from '../models'
 import { capitalize, getEmoji } from '../utils'
 
 export default (app: App) => {
@@ -18,10 +18,7 @@ export default (app: App) => {
             return
         }
 
-        const chat = await user.getCurrentChat()
-        if (!chat) {
-            return
-        }
+        const chat = await user.getCurrentChat() as Chat
 
         // Broadcast leave message to current chat
         const noun = await user.getNoun() as string

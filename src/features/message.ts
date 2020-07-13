@@ -1,6 +1,6 @@
 import { App, subtype } from '@slack/bolt'
 import { channelType } from '../middlewares'
-import { User } from '../models'
+import { Chat, User } from '../models'
 import { capitalize, getEmoji, removeSpecialTags } from '../utils'
 
 export default (app: App) => {
@@ -40,10 +40,7 @@ export default (app: App) => {
             })
         }
 
-        const currentChat = await user.getCurrentChat()
-        if (!currentChat) {
-            return
-        }
+        const currentChat = await user.getCurrentChat() as Chat
 
         // Broadcast the message to other chat members
         const noun = await user.getNoun() as string
@@ -55,11 +52,7 @@ export default (app: App) => {
                 continue
             }
 
-            const member = await User.get(memberId)
-
-            if (!member) {
-                return
-            }
+            const member = await User.get(memberId) as User
 
             await client.chat.postMessage({
                 channel: await member.getDmChannelId() as string,

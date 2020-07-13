@@ -11,7 +11,7 @@ export default (app: App) => {
         }
 
         // If the user isn't in a chat, prompt them to start one
-        if (await user.isAvailable()) {
+        if (!await user.isInChat()) {
             await client.chat.postEphemeral({
                 channel: event.channel,
                 user: event.user,
@@ -79,7 +79,7 @@ export default (app: App) => {
         }
 
         // Won't matter if the user isn't currently in a chat
-        if (await user.isAvailable()) {
+        if (!await user.isInChat()) {
             return
         }
 

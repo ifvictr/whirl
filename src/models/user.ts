@@ -31,8 +31,8 @@ class User {
         return redis.hget(this.key, 'noun')
     }
 
-    async isAvailable() {
-        return !await redis.hexists(this.key, 'chat_id')
+    async isInChat() {
+        return redis.hexists(this.key, 'chat_id')
     }
 
     async isInPool() {

@@ -13,7 +13,7 @@ export default (app: App) => {
             return
         }
 
-        if (await user.isAvailable()) {
+        if (!await user.isInChat()) {
             await respond('You’re not in a chat.')
             return
         }

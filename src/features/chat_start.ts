@@ -23,7 +23,7 @@ export default (app: App) => {
         }
 
         // User can't start another chat if they're already in one
-        if (!await user.isAvailable()) {
+        if (await user.isInChat()) {
             await client.chat.postEphemeral({
                 channel: body.channel!.id,
                 user: body.user.id,

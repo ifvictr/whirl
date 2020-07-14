@@ -42,7 +42,7 @@ export const HomeLayout = ({
             text: {
                 type: 'mrkdwn',
                 text: `:information_source: *Quick Info*\n
-• A read receipt in the form of an :eyes: reaction (or animal emoji like :monkey_face:, depending on the group size) will appear under a message when an other user sees it.
+• A read receipt in the form of an :eyes: reaction (or animal emoji like :monkey_face:, depending on the group size) will appear under a message when another user reads it.
 • *\`/next\`:* Go to the next chat. Will add you to the waiting pool if no open chats are immediately available.
 • *\`/end\`:* Ends the current chat, but doesn’t automatically start another chat.`
             }

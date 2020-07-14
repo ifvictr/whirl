@@ -76,6 +76,7 @@ class Chat {
             .hset(newChat.key, 'created_at', Math.floor(Date.now() / 1000)) // UNIX timestamp
             .incr('count:active_chats')
             .incr('count:total_chats')
+            .exec()
 
         return newChat
     }

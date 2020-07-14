@@ -45,9 +45,9 @@ export default (app: App) => {
         await user.leave()
         await say('_You’ve left the chat._')
 
-        // Kick remaining members if the chat size drops below 2
+        // Kick remaining members if the chat size drops below the minimum
         const updatedMembers = await chat.getMembers()
-        if (updatedMembers.length < 2) {
+        if (updatedMembers.length < Chat.MIN_SIZE) {
             for (const memberId of updatedMembers) {
                 await client.chat.postMessage({
                     channel: memberId,
@@ -104,9 +104,9 @@ export default (app: App) => {
             await user.leave()
             await say('_You’ve left the chat._')
 
-            // Kick remaining members if the chat size drops below 2
+            // Kick remaining members if the chat size drops below the minimum
             const updatedMembers = await chat.getMembers()
-            if (updatedMembers.length < 2) {
+            if (updatedMembers.length < Chat.MIN_SIZE) {
                 for (const memberId of updatedMembers) {
                     await client.chat.postMessage({
                         channel: memberId,

@@ -3,6 +3,8 @@ import randomatic from 'randomatic'
 import redis from '../redis'
 
 class Chat {
+    static readonly MIN_SIZE = 2
+
     readonly id: string
     readonly key: string
 

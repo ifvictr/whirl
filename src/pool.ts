@@ -12,11 +12,11 @@ class Pool {
         await redis.srem('user_pool', userId)
     }
 
-    async canCreateChat(size: number = 2) {
+    async canCreateChat(size: number = Chat.MIN_SIZE) {
         return await redis.scard('user_pool') >= size
     }
 
-    async createChat(initiatingUserId: string, size: number = 2) {
+    async createChat(initiatingUserId: string, size: number = Chat.MIN_SIZE) {
         const membersNeeded = size - 1
         if (!await this.canCreateChat(membersNeeded)) {
             return null

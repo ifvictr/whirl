@@ -27,12 +27,20 @@ class User {
         return redis.hget(this.key, 'dm_channel_id')
     }
 
+    async getLastReadMessageId(senderId: string) {
+        return redis.hget(`${this.key}:last_read_message_ids`, senderId)
+    }
+
+    async setLastReadMessageId(senderId: string, messageId: string) {
+        await redis.hset(`${this.key}:last_read_message_ids`, senderId, messageId)
+    }
+
     async getNoun() {
         return redis.hget(this.key, 'noun')
     }
 
-    async isAvailable() {
-        return await redis.hget(this.key, 'chat_id') === ''
+    async isInChat() {
+        return redis.hexists(this.key, 'chat_id')
     }
 
     async isInPool() {
@@ -51,12 +59,7 @@ class User {
 
     static async create(userId: string, dmChannelId: string) {
         const newUser = new User(userId)
-
-        await redis.multi()
-            .hset(newUser.key, 'chat_id', '')
-            .hset(newUser.key, 'dm_channel_id', dmChannelId)
-            .hset(newUser.key, 'noun', '')
-            .exec()
+        await redis.hset(newUser.key, 'dm_channel_id', dmChannelId)
 
         return newUser
     }

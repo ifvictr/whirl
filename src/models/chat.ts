@@ -40,11 +40,22 @@ class Chat {
     }
 
     async removeMember(userId: string) {
-        return redis.multi()
+        let commands = redis.multi()
             .srem(`${this.key}:members`, userId)
-            .hset(`user:${userId}`, 'chat_id', '')
-            .hset(`user:${userId}`, 'noun', '')
-            .exec()
+            .hdel(`user:${userId}`, 'chat_id')
+            .hdel(`user:${userId}`, 'noun')
+            .del(`user:${userId}:last_read_message_ids`)
+
+        // Remove the user from the other members' last read message IDs
+        for (const memberId of await this.getMembers()) {
+            if (memberId === userId) {
+                continue
+            }
+
+            commands = commands.hdel(`user:${memberId}:last_read_message_ids`, userId)
+        }
+
+        return commands.exec()
     }
 
     async getCreatedAt() {
@@ -58,7 +69,7 @@ class Chat {
     static async create() {
         const newChat = new Chat(randomatic('A0', 10))
 
-        await redis.hset(newChat.key, 'created_at', new Date().toISOString())
+        await redis.hset(newChat.key, 'created_at', Math.floor(Date.now() / 1000)) // UNIX timestamp
 
         return newChat
     }

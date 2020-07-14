@@ -1,7 +1,7 @@
 import { App } from '@slack/bolt'
 import { User } from '../models'
 import pool from '../pool'
-import { capitalize, getIcon } from '../utils'
+import { capitalize, getEmoji } from '../utils'
 
 export default (app: App) => {
     app.action('chat_start', async ({ ack, body, client, say }) => {
@@ -23,7 +23,7 @@ export default (app: App) => {
         }
 
         // User can't start another chat if they're already in one
-        if (!await user.isAvailable()) {
+        if (await user.isInChat()) {
             await client.chat.postEphemeral({
                 channel: body.channel!.id,
                 user: body.user.id,
@@ -51,14 +51,11 @@ export default (app: App) => {
         const members = await chat.getMembers()
         // Loop over all the identities of the chat members
         for (const memberId of members) {
-            const member = await User.get(memberId)
-            if (!member) {
-                continue
-            }
+            const member = await User.get(memberId) as User
 
             const noun = await member.getNoun() as string
             const displayName = `Anonymous ${capitalize(noun)}`
-            const emoji = getIcon(noun)
+            const emoji = getEmoji(noun) as string
             // Send intro message to everyone but the member being introduced
             for (const otherMemberId of members) {
                 if (otherMemberId === memberId) {
@@ -66,7 +63,7 @@ export default (app: App) => {
                 }
                 await client.chat.postMessage({
                     channel: otherMemberId,
-                    text: `You are now talking to ${emoji ? emoji + ' ' : ''}*${displayName}*. Say hi!`
+                    text: `You are now talking to :${emoji}: *${displayName}*. Say hi!`
                 })
             }
         }

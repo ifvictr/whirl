@@ -1,7 +1,7 @@
 import { App, subtype } from '@slack/bolt'
 import { channelType } from '../middlewares'
-import { User } from '../models'
-import { capitalize, getIcon, removeSpecialTags } from '../utils'
+import { Chat, User } from '../models'
+import { capitalize, getEmoji, removeSpecialTags } from '../utils'
 
 export default (app: App) => {
     app.message(channelType('im'), async ({ client, event }) => {
@@ -11,7 +11,7 @@ export default (app: App) => {
         }
 
         // If the user isn't in a chat, prompt them to start one
-        if (await user.isAvailable()) {
+        if (!await user.isInChat()) {
             await client.chat.postEphemeral({
                 channel: event.channel,
                 user: event.user,
@@ -40,33 +40,26 @@ export default (app: App) => {
             })
         }
 
-        const currentChat = await user.getCurrentChat()
-        if (!currentChat) {
-            return
-        }
+        const currentChat = await user.getCurrentChat() as Chat
 
         // Broadcast the message to other chat members
         const noun = await user.getNoun() as string
         const displayName = `Anonymous ${capitalize(noun)}`
-        const emoji = getIcon(noun) as string
+        const emoji = getEmoji(noun) as string
         for (const memberId of await currentChat.getMembers()) {
             // Don't send the message to the sender again
             if (memberId === event.user) {
                 continue
             }
 
-            const member = await User.get(memberId)
-
-            if (!member) {
-                return
-            }
+            const member = await User.get(memberId) as User
 
             await client.chat.postMessage({
                 channel: await member.getDmChannelId() as string,
                 text: removeSpecialTags(event.text!),
                 attachments: event.attachments,
                 // blocks: event.blocks,
-                icon_emoji: emoji,
+                icon_emoji: `${emoji}`,
                 username: displayName
             })
         }
@@ -79,7 +72,7 @@ export default (app: App) => {
         }
 
         // Won't matter if the user isn't currently in a chat
-        if (await user.isAvailable()) {
+        if (!await user.isInChat()) {
             return
         }
 

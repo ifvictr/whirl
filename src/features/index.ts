@@ -1,3 +1,4 @@
+export { default as chatRead } from './chat_read'
 export { default as chatStart } from './chat_start'
 export { default as command } from './command'
 export { default as message } from './message'

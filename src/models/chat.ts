@@ -15,6 +15,7 @@ class Chat {
         return redis.multi()
             .del(this.key)
             .del(`${this.key}:members`)
+            .decr('count:active_chats')
             .exec()
     }
 
@@ -36,6 +37,7 @@ class Chat {
             .sadd(`${this.key}:members`, userId)
             .hset(`user:${userId}`, 'chat_id', this.id)
             .hset(`user:${userId}`, 'noun', noun)
+            .incr('count:active_users')
             .exec()
     }
 
@@ -45,6 +47,7 @@ class Chat {
             .hdel(`user:${userId}`, 'chat_id')
             .hdel(`user:${userId}`, 'noun')
             .del(`user:${userId}:last_read_message_ids`)
+            .decr('count:active_users')
 
         // Remove the user from the other members' last read message IDs
         for (const memberId of await this.getMembers()) {
@@ -69,7 +72,11 @@ class Chat {
     static async create() {
         const newChat = new Chat(randomatic('A0', 10))
 
-        await redis.hset(newChat.key, 'created_at', Math.floor(Date.now() / 1000)) // UNIX timestamp
+        await redis.multi()
+            .hset(newChat.key, 'created_at', Math.floor(Date.now() / 1000)) // UNIX timestamp
+            .incr('count:active_chats')
+            .incr('count:total_chats')
+            .exec()
 
         return newChat
     }

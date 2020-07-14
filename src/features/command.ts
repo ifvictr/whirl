@@ -5,6 +5,64 @@ import pool from '../pool'
 import { capitalize, getEmoji } from '../utils'
 
 export default (app: App) => {
+    app.command('/end', async ({ ack, client, command, context, respond, say }) => {
+        await ack()
+
+        const user = await User.get(command.user_id)
+        if (!user) {
+            await respond(`You need to visit your DM with <@${context.botUserId}> first to use this command.`)
+            return
+        }
+
+        // User can't start another chat if they're already in one
+        if (!await user.isInChat()) {
+            await client.chat.postEphemeral({
+                channel: command.channel_id,
+                user: command.user_id,
+                text: 'You’re not in a chat right now.'
+            })
+            return
+        }
+
+        const chat = await user.getCurrentChat() as Chat
+
+        // Broadcast leave message to current chat
+        const noun = await user.getNoun() as string
+        const displayName = `Anonymous ${capitalize(noun)}`
+        const emoji = getEmoji(noun) as string
+        const message = `:${emoji}: _${displayName} has left the chat._`
+        for (const memberId of await chat.getMembers()) {
+            if (memberId === command.user_id) {
+                continue
+            }
+
+            await client.chat.postMessage({
+                channel: memberId,
+                text: message
+            })
+        }
+
+        await user.leave()
+        await say('_You’ve left the chat._')
+
+        // Kick remaining members if the chat size drops below 2
+        const updatedMembers = await chat.getMembers()
+        if (updatedMembers.length < 2) {
+            for (const memberId of updatedMembers) {
+                await client.chat.postMessage({
+                    channel: memberId,
+                    text: '_This chat has ended._'
+                })
+                await client.chat.postMessage({
+                    channel: memberId,
+                    text: 'Want to start another chat?',
+                    blocks: ChatPrompt()
+                })
+            }
+            await chat.end()
+        }
+    })
+
     app.command('/next', async ({ ack, client, command, context, respond, say }) => {
         await ack()
 
@@ -44,8 +102,6 @@ export default (app: App) => {
             }
 
             await user.leave()
-
-            // Show messsage and prompt to leaving user
             await say('_You’ve left the chat._')
 
             // Kick remaining members if the chat size drops below 2

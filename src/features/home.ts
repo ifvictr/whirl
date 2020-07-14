@@ -17,22 +17,23 @@ export default (app: App) => {
         }
 
         // Fetch the latest stats to display to the user
+        const rawCounts = await Promise.all(COUNTER_KEYS.map(key => redis.get(`count:${key}`))) as string[]
         const [
             activeChatCount,
             activeUserCount,
             totalChatCount,
             totalMessagesSent,
             totalUserCount
-        ] = await Promise.all(COUNTER_KEYS.map(key => redis.get(`count:${key}`))) as string[]
+        ] = rawCounts.map(count => parseInt(count) || 0)
 
         await client.views.publish({
             user_id: event.user,
             view: HomeLayout({
-                activeChatCount: parseInt(activeChatCount),
-                activeUserCount: parseInt(activeUserCount),
-                totalChatCount: parseInt(totalChatCount),
-                totalMessagesSent: parseInt(totalMessagesSent),
-                totalUserCount: parseInt(totalUserCount),
+                activeChatCount,
+                activeUserCount,
+                totalChatCount,
+                totalMessagesSent,
+                totalUserCount,
             })
         })
     })

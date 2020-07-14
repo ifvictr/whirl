@@ -1,6 +1,7 @@
 import { App, subtype } from '@slack/bolt'
 import { channelType } from '../middlewares'
 import { Chat, User } from '../models'
+import redis from '../redis'
 import { capitalize, getEmoji, removeSpecialTags } from '../utils'
 
 export default (app: App) => {
@@ -63,6 +64,9 @@ export default (app: App) => {
                 username: displayName
             })
         }
+
+        // Increment the message count
+        await redis.incr('count:total_messages_sent')
     })
 
     app.message(channelType('im'), subtype('message_changed'), async ({ client, event }) => {

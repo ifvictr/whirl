@@ -13,7 +13,7 @@ export default (app: App) => {
             return
         }
 
-        // Only show read receipts to users that are in a chat
+        // Read receipts are only applicable to users that are in a chat
         if (!await user.isInChat()) {
             return
         }

@@ -59,7 +59,10 @@ class User {
 
     static async create(userId: string, dmChannelId: string) {
         const newUser = new User(userId)
-        await redis.hset(newUser.key, 'dm_channel_id', dmChannelId)
+        await redis.multi()
+            .hset(newUser.key, 'dm_channel_id', dmChannelId)
+            .incr('count:total_users')
+            .exec()
 
         return newUser
     }

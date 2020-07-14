@@ -48,18 +48,19 @@ export default (app: App) => {
                 }
 
                 // Remove the reaction from the previous latest message if it exists
+                const reactOptions = {
+                    channel: dmChannelId,
+                    name: emoji
+                }
                 if (lastReadMessageId) {
                     await client.reactions.remove({
-                        channel: dmChannelId,
-                        name: emoji,
+                        ...reactOptions,
                         timestamp: lastReadMessageId
                     })
                 }
-
                 // React to the latest message
                 await client.reactions.add({
-                    channel: dmChannelId,
-                    name: emoji,
+                    ...reactOptions,
                     timestamp: latestMessageId
                 })
             } catch (e) {

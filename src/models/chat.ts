@@ -40,11 +40,22 @@ class Chat {
     }
 
     async removeMember(userId: string) {
-        return redis.multi()
+        let commands = redis.multi()
             .srem(`${this.key}:members`, userId)
             .hdel(`user:${userId}`, 'chat_id')
             .hdel(`user:${userId}`, 'noun')
-            .exec()
+            .del(`user:${userId}:last_read_message_ids`)
+
+        // Remove the user from the other members' last read message IDs
+        for (const memberId of await this.getMembers()) {
+            if (memberId === userId) {
+                continue
+            }
+
+            commands = commands.hdel(`user:${memberId}:last_read_message_ids`, userId)
+        }
+
+        return commands.exec()
     }
 
     async getCreatedAt() {

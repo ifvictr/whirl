@@ -27,6 +27,14 @@ class User {
         return redis.hget(this.key, 'dm_channel_id')
     }
 
+    async getLastReadMessageId(senderId: string) {
+        return redis.hget(`${this.key}:last_read_message_ids`, senderId)
+    }
+
+    async setLastReadMessageId(senderId: string, messageId: string) {
+        await redis.hset(`${this.key}:last_read_message_ids`, senderId, messageId)
+    }
+
     async getNoun() {
         return redis.hget(this.key, 'noun')
     }

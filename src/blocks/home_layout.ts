@@ -21,7 +21,7 @@ export const HomeLayout = ({
             type: 'section',
             text: {
                 type: 'mrkdwn',
-                text: ':cyclone: *Whirl* lets you have fun, anonymous chats with random members of your Slack! Just click on the *Messages* tab to start whirlin’.'
+                text: ':cyclone: *Whirl* lets you have fun, anonymous chats with random members of your Slack. Just click on the *Messages* tab to start whirlin’!'
             }
         },
         {

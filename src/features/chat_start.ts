@@ -22,12 +22,12 @@ export default (app: App) => {
             return
         }
 
-        // User can't start another chat if they're already in one
+        // User can't join another chat if they're in one already
         if (await user.isInChat()) {
             await client.chat.postEphemeral({
                 channel: body.channel!.id,
                 user: body.user.id,
-                text: 'You can’t start another chat because you’re already in one.'
+                text: 'You can’t join another chat because you’re in one already.'
             })
             return
         }

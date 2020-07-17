@@ -23,7 +23,7 @@ export const ChatPrompt = ({
                 style: 'primary',
                 text: {
                     type: 'plain_text',
-                    text: `Start ${isExistingUser ? 'another' : 'a'} chat`
+                    text: `Join ${isExistingUser ? 'another' : 'a'} chat`
                 }
             }
         ]

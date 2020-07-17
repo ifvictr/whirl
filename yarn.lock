@@ -113,10 +113,10 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
-"@types/ioredis@^4.16.7":
-  version "4.16.7"
-  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.16.7.tgz#2620a48c26faeb4b65f2ef7501ed6e515d8a3327"
-  integrity sha512-gc0g0OlBxc/Mlhutv5Njkm3A4m5oZXq8gCeEGOt2c4p4ZIYw9dotYjg6z8nSsxOH9KnKkjWUzg0oGCAqtnGFIg==
+"@types/ioredis@^4.17.2":
+  version "4.17.2"
+  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.17.2.tgz#2a9b0aeba5cf8d5f38afdeb85ef77ec95040d80c"
+  integrity sha512-T0sEKyqkhr4/RfgM2iTtmy0uPI4QZ9c0syq3mmAPNS5ZZMzjdtKv1ziuTdyNUvh0mZihXfKcRcWZI2wRYnxO7Q==
   dependencies:
     "@types/node" "*"
 
@@ -1766,10 +1766,10 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-typescript@^3.9.5:
-  version "3.9.5"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.5.tgz#586f0dba300cde8be52dd1ac4f7e1009c1b13f36"
-  integrity sha512-hSAifV3k+i6lEoCJ2k6R2Z/rp/H3+8sdmcn5NrS3/3kE7+RyZXm9aqvxWqjEXHAd8b0pShatpcdMTvEdvAJltQ==
+typescript@^3.9.7:
+  version "3.9.7"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
+  integrity sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
 
 undefsafe@^2.0.2:
   version "2.0.3"

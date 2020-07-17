@@ -6,7 +6,7 @@ export default (app: App) => {
             // @ts-ignore
             channel: event.item.channel,
             user: event.user,
-            text: 'Reactions aren’t currently supported, so only you are able to see them.'
+            text: 'User reactions aren’t currently supported, so only you will be able to see them.'
         })
     })
 }

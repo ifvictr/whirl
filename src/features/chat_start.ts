@@ -63,7 +63,7 @@ export default (app: App) => {
                 }
                 await client.chat.postMessage({
                     channel: otherMemberId,
-                    text: `You are now talking to :${emoji}: *${displayName}*. Say hi!`
+                    text: `You are now talking to :${emoji}: *${displayName}*. Say hi! To end this chat at any time, run *\`/next\`*.`
                 })
             }
         }

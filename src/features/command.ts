@@ -44,6 +44,11 @@ export default (app: App) => {
 
         await user.leave()
         await say('_You’ve left the chat._')
+        await client.chat.postMessage({
+            channel: command.user_id,
+            text: 'Want to join another one?',
+            blocks: ChatPrompt()
+        })
 
         // Kick remaining members if the chat size drops below the minimum
         const updatedMembers = await chat.getMembers()
@@ -55,7 +60,7 @@ export default (app: App) => {
                 })
                 await client.chat.postMessage({
                     channel: memberId,
-                    text: 'Want to start another chat?',
+                    text: 'Want to join another one?',
                     blocks: ChatPrompt()
                 })
             }
@@ -77,7 +82,7 @@ export default (app: App) => {
             await client.chat.postEphemeral({
                 channel: command.channel_id,
                 user: command.user_id,
-                text: 'You’re already waiting in the pool.'
+                text: 'You’re already in :beach_with_umbrella: *The Waiting Pool*.'
             })
             return
         }
@@ -114,7 +119,7 @@ export default (app: App) => {
                     })
                     await client.chat.postMessage({
                         channel: memberId,
-                        text: 'Want to start another chat?',
+                        text: 'Want to join another one?',
                         blocks: ChatPrompt()
                     })
                 }

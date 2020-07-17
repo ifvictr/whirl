@@ -65,7 +65,8 @@ export default (app: App) => {
             })
         }
 
-        // Increment the message count
+        // Increment the message counts
+        await redis.hincrby(currentChat.key, 'message_count', 1)
         await redis.incr('count:total_messages_sent')
     })
 

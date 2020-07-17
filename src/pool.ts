@@ -1,6 +1,7 @@
 import sampleSize from 'lodash.samplesize'
 import nouns from './data/nouns.json'
 import { Chat } from './models'
+import ChatMetadata from './models/chat_metadata'
 import redis from './redis'
 
 class Pool {
@@ -22,7 +23,7 @@ class Pool {
             return null
         }
 
-        const newChat = await Chat.create()
+        const newChat = await Chat.create(size)
 
         // Generate the nouns that will be used
         const randomNouns = sampleSize(nouns, size)
@@ -30,6 +31,7 @@ class Pool {
         await newChat.addMember(initiatingUserId, randomNouns[0])
         await this.remove(initiatingUserId)
 
+        const membersMetadata = []
         for (let i = 0; i < membersNeeded; i++) {
             const randomUserId = await redis.srandmember('user_pool') as string
 
@@ -40,9 +42,21 @@ class Pool {
                 continue
             }
 
-            await newChat.addMember(randomUserId, randomNouns[1 + i]) // Add 1 because the initiating user already claimed the first noun
+            const noun = randomNouns[1 + i] // Add 1 because the initiating user already claimed the first noun
+            await newChat.addMember(randomUserId, noun)
             await this.remove(randomUserId)
+
+            membersMetadata.push({
+                id: randomUserId,
+                noun
+            })
         }
+
+        // Add user IDs and pseudonyms to metadata
+        // TODO: Don't use any
+        const newChatMetadata = await ChatMetadata.findById(newChat.id) as any
+        newChatMetadata.members = membersMetadata
+        await newChatMetadata.save()
 
         return newChat
     }

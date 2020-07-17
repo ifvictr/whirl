@@ -1,6 +1,7 @@
 // @ts-ignore
 import randomatic from 'randomatic'
 import redis from '../redis'
+import ChatMetadata from './chat_metadata'
 
 class Chat {
     static readonly MIN_SIZE = 2
@@ -27,6 +28,24 @@ class Chat {
             await this.removeMember(memberId)
         }
 
+        // Check the chat's total message count. If it's at least the minimum,
+        // we'll update the metadata with the ending timestamp and the amount of
+        // messages sent. But if it falls below that, it's considered insignificant
+        // (i.e., a user running /next many times in a row without having sent a
+        // message) and is simply discarded from the database.
+        const MIN_MESSAGES = 3
+        const messageCount = await this.getMessageCount()
+        if (messageCount >= MIN_MESSAGES) {
+            // TODO: Don't use any
+            const chatMetadata = await ChatMetadata.findById(this.id) as any
+            chatMetadata.endedAt = Date.now()
+            chatMetadata.messageCount = messageCount
+            await chatMetadata.save()
+        } else {
+            await ChatMetadata.findByIdAndDelete(this.id)
+        }
+
+        // Delete from Redis' memory
         await this.delete()
     }
 
@@ -67,18 +86,39 @@ class Chat {
         return redis.hget(this.key, 'created_at')
     }
 
+    async getMessageCount() {
+        const messageCount = await redis.hget(this.key, 'message_count')
+        if (!messageCount) {
+            return 0
+        }
+
+        return parseInt(messageCount)
+    }
+
     async getSize() {
         return redis.scard(`${this.key}:members`)
     }
 
-    static async create() {
-        const newChat = new Chat(randomatic('A0', 10))
+    static async create(size: number = Chat.MIN_SIZE) {
+        // TODO: Guarantee the ID is unique within the DB and Redis cache
+        const randomId = randomatic('A0', 10)
+        const startedAt = Date.now()
 
+        // Create the base chat representation in Redis
+        const newChat = new Chat(randomId)
         await redis.multi()
-            .hset(newChat.key, 'created_at', Math.floor(Date.now() / 1000)) // UNIX timestamp
+            .hset(newChat.key, 'created_at', Math.floor(startedAt / 1000)) // UNIX timestamp
+            .hset(newChat.key, 'message_count', 0)
             .incr('count:active_chats')
             .incr('count:total_chats')
             .exec()
+
+        // Store the base metadata in Mongo
+        await ChatMetadata.create({
+            _id: randomId,
+            startedAt,
+            size
+        })
 
         return newChat
     }

@@ -27,11 +27,13 @@
     "@slack/bolt": "^2.1.1",
     "ioredis": "^4.17.3",
     "lodash.samplesize": "^4.2.0",
+    "mongoose": "^5.9.24",
     "randomatic": "^3.1.1"
   },
   "devDependencies": {
     "@types/ioredis": "^4.17.2",
     "@types/lodash.samplesize": "^4.2.6",
+    "@types/mongoose": "^5.7.32",
     "dotenv": "^8.2.0",
     "nodemon": "^2.0.4",
     "ts-node": "^8.10.2",

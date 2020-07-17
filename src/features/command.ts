@@ -30,7 +30,7 @@ export default (app: App) => {
         const noun = await user.getNoun() as string
         const displayName = `Anonymous ${capitalize(noun)}`
         const emoji = getEmoji(noun) as string
-        const message = `:${emoji}: _${displayName} has left the chat._`
+        const message = `:${emoji}: _${displayName} left the chat._`
         for (const memberId of await chat.getMembers()) {
             if (memberId === command.user_id) {
                 continue
@@ -43,7 +43,7 @@ export default (app: App) => {
         }
 
         await user.leave()
-        await say('_You’ve left the chat._')
+        await say('_You left the chat._')
         await client.chat.postMessage({
             channel: command.user_id,
             text: 'Want to join another one?',
@@ -94,7 +94,7 @@ export default (app: App) => {
             const noun = await user.getNoun() as string
             const displayName = `Anonymous ${capitalize(noun)}`
             const emoji = getEmoji(noun) as string
-            const message = `:${emoji}: _${displayName} has left the chat._`
+            const message = `:${emoji}: _${displayName} left the chat._`
             for (const memberId of await chat.getMembers()) {
                 if (memberId === command.user_id) {
                     continue
@@ -107,7 +107,7 @@ export default (app: App) => {
             }
 
             await user.leave()
-            await say('_You’ve left the chat._')
+            await say('_You left the chat._')
 
             // Kick remaining members if the chat size drops below the minimum
             const updatedMembers = await chat.getMembers()

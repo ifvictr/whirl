@@ -17,7 +17,7 @@ export default (app: App) => {
             await client.chat.postEphemeral({
                 channel: body.channel!.id,
                 user: body.user.id,
-                text: 'You’re already waiting in the pool.'
+                text: 'You’re already in :beach_with_umbrella: *The Waiting Pool*.'
             })
             return
         }
@@ -43,7 +43,7 @@ export default (app: App) => {
         const chat = await pool.createChat(body.user.id)
         if (!chat) {
             await pool.add(body.user.id)
-            await say('You’ve been added to *The Waiting Pool* :beach_with_umbrella:! A chat will start as soon as more people join.')
+            await say('You’ve been added to :beach_with_umbrella: *The Waiting Pool*! A chat will start as soon as more people join.')
             return
         }
 

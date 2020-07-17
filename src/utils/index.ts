@@ -6,8 +6,6 @@ const nouns = nounsJson as string[]
 
 export const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 
-export const isDM = (channel: string) => channel.startsWith('D')
-
 export const getEmoji = (noun: string) => nouns.includes(noun)
     ? icons[noun] ? icons[noun] : noun
     : null

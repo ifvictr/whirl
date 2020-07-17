@@ -1,5 +1,6 @@
 // @ts-ignore
 import randomatic from 'randomatic'
+import config from '../config'
 import redis from '../redis'
 import ChatMetadata from './chat_metadata'
 
@@ -33,9 +34,8 @@ class Chat {
         // messages sent. But if it falls below that, it's considered insignificant
         // (i.e., a user running /next many times in a row without having sent a
         // message) and is simply discarded from the database.
-        const MIN_MESSAGES = 3
         const messageCount = await this.getMessageCount()
-        if (messageCount >= MIN_MESSAGES) {
+        if (messageCount >= config.chatMetadataThreshold) {
             // TODO: Don't use any
             const chatMetadata = await ChatMetadata.findById(this.id) as any
             chatMetadata.endedAt = Date.now()

@@ -4,6 +4,7 @@ interface Config {
     redisUrl: string
     botToken?: string
     signingSecret?: string
+    chatMetadataThreshold: number
 }
 
 const config: Config = {
@@ -12,7 +13,8 @@ const config: Config = {
     redisUrl: process.env.REDIS_URL || '',
     // Slack-specific config
     botToken: process.env.SLACK_CLIENT_BOT_TOKEN,
-    signingSecret: process.env.SLACK_CLIENT_SIGNING_SECRET
+    signingSecret: process.env.SLACK_CLIENT_SIGNING_SECRET,
+    chatMetadataThreshold: parseInt(process.env.CHAT_METADATA_THRESHOLD || '') || 3
 }
 
 export default config

@@ -1,9 +1,17 @@
 import { App } from '@slack/bolt'
+import mongoose from 'mongoose'
 import config from './config'
 import * as features from './features'
 
 const init = async () => {
     console.log('Starting Whirl…')
+
+    // Set up database connection
+    await mongoose.connect(config.databaseUrl, {
+        useFindAndModify: false,
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
 
     // Initialize Slack app
     const app = new App({

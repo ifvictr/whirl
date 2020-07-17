@@ -1,4 +1,5 @@
 interface Config {
+    databaseUrl: string
     port: number
     redisUrl: string
     botToken?: string
@@ -6,6 +7,7 @@ interface Config {
 }
 
 const config: Config = {
+    databaseUrl: process.env.DATABASE_URL || process.env.MONGODB_URI || '',
     port: parseInt(process.env.PORT || '') || 3000,
     redisUrl: process.env.REDIS_URL || '',
     // Slack-specific config

@@ -16,7 +16,7 @@ export default (app: App) => {
             await client.chat.postEphemeral({
                 channel: event.channel,
                 user: event.user,
-                text: 'You’re not in a chat right now, so this won’t be sent anywhere :stuck_out_tongue:'
+                text: 'You’re not in a chat right now, so this won’t go anywhere. Run *`/next`* to join one!'
             })
             return
         }

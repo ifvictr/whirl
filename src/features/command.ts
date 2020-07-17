@@ -131,7 +131,7 @@ export default (app: App) => {
         const newChat = await pool.createChat(command.user_id)
         if (!newChat) {
             await pool.add(command.user_id)
-            await say('You’ve been added to *The Waiting Pool* :beach_with_umbrella:! A chat will start as soon as more people join.')
+            await say('You’ve been added to :beach_with_umbrella: *The Waiting Pool*! A chat will start as soon as more people join.')
             return
         }
 

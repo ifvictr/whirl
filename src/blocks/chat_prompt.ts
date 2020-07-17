@@ -10,7 +10,7 @@ export const ChatPrompt = ({
             type: 'section',
             text: {
                 type: 'mrkdwn',
-                text: ':wave: Hey, welcome to Whirl! Here, you can have fun, completely anonymous one-on-one chats with other members of your Slack. Just click below to get started.'
+                text: ':wave: Hey, welcome to Whirl! Here, you can have fun, completely anonymous chats with random members of your Slack. Just click below to get started.'
             }
         }]
         : [],

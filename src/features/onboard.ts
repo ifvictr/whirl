@@ -13,7 +13,7 @@ export default (app: App) => {
             await User.create(event.user, event.channel)
             await say({
                 blocks: ChatPrompt({ isExistingUser: false }),
-                text: 'Welcome to Whirl, where you can have fun, completely anonymous one-on-one chats with other members of your Slack. Check your DMs to get started.'
+                text: 'Welcome to Whirl, where you can have fun, completely anonymous chats with other members of your Slack. Check your DMs to get started.'
             })
         }
     })

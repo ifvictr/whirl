@@ -60,7 +60,7 @@ export default (app: App) => {
                 text: removeSpecialTags(event.text!),
                 attachments: event.attachments,
                 // blocks: event.blocks,
-                icon_emoji: `${emoji}`,
+                icon_emoji: `:${emoji}:`,
                 username: displayName
             })
         }

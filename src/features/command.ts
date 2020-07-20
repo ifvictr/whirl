@@ -5,7 +5,7 @@ import pool from '../pool'
 import { capitalize, getEmoji } from '../utils'
 
 export default (app: App) => {
-    app.command('/end', async ({ ack, client, command, context, respond, say }) => {
+    app.command('/end', async ({ ack, client, command, context, respond }) => {
         await ack()
 
         const user = await User.get(command.user_id)
@@ -43,10 +43,9 @@ export default (app: App) => {
         }
 
         await user.leave()
-        await say('_You left the chat._')
         await client.chat.postMessage({
             channel: command.user_id,
-            text: 'Want to join another one?',
+            text: 'You left the chat. Want to join another one?',
             blocks: ChatPrompt()
         })
 
@@ -68,7 +67,7 @@ export default (app: App) => {
         }
     })
 
-    app.command('/next', async ({ ack, client, command, context, respond, say }) => {
+    app.command('/next', async ({ ack, client, command, context, respond }) => {
         await ack()
 
         const user = await User.get(command.user_id)
@@ -107,7 +106,6 @@ export default (app: App) => {
             }
 
             await user.leave()
-            await say('_You left the chat._')
 
             // Kick remaining members if the chat size drops below the minimum
             const updatedMembers = await chat.getMembers()
@@ -131,7 +129,10 @@ export default (app: App) => {
         const newChat = await pool.createChat(command.user_id)
         if (!newChat) {
             await pool.add(command.user_id)
-            await say('You’ve been added to :beach_with_umbrella: *The Waiting Pool*! A chat will start as soon as more people join.')
+            await client.chat.postMessage({
+                channel: command.user_id,
+                text: 'You left the chat and moved to :beach_with_umbrella: *The Waiting Pool*! A chat will start as soon as there are more people.'
+            })
             return
         }
 

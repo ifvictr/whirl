@@ -5,15 +5,15 @@ export interface ChatPromptProps {
 export const ChatPrompt = ({
     isExistingUser = true
 }: ChatPromptProps = {}) => ([
-    ...!isExistingUser
-        ? [{
-            type: 'section',
-            text: {
-                type: 'mrkdwn',
-                text: ':wave: Hey, welcome to Whirl! Here, you can have fun, completely anonymous chats with random members of your Slack. Just click below to get started.'
-            }
-        }]
-        : [],
+    {
+        type: 'section',
+        text: {
+            type: 'mrkdwn',
+            text: isExistingUser
+                ? 'You left the chat. Want to join another one?'
+                : ':wave: Hey, welcome to Whirl! Here, you can have fun, completely anonymous chats with random members of your Slack. Just click below to get started.'
+        }
+    },
     {
         type: 'actions',
         elements: [

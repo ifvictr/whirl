@@ -126,7 +126,7 @@ export default (app: App) => {
         }
 
         // Attempt to create a chat. If that fails, add the user to the pool.
-        const newChat = await pool.createChat(command.user_id)
+        const newChat = await pool.attemptToCreateChat(command.user_id)
         if (!newChat) {
             await pool.add(command.user_id)
             await client.chat.postMessage({

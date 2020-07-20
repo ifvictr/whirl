@@ -17,7 +17,7 @@ class Pool {
         return await redis.scard('user_pool') >= size
     }
 
-    async createChat(initiatingUserId: string, size: number = Chat.MIN_SIZE) {
+    async attemptToCreateChat(initiatingUserId: string, size: number = Chat.MIN_SIZE) {
         const membersNeeded = size - 1
         if (!await this.canCreateChat(membersNeeded)) {
             return null

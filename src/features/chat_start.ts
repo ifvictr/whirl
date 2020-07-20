@@ -40,7 +40,7 @@ export default (app: App) => {
         })
 
         // Attempt to create a chat. If that fails, add the user to the pool.
-        const chat = await pool.createChat(body.user.id)
+        const chat = await pool.attemptToCreateChat(body.user.id)
         if (!chat) {
             await pool.add(body.user.id)
             await say('You’ve been added to :beach_with_umbrella: *The Waiting Pool*! A chat will start as soon as more people join.')

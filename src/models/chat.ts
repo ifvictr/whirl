@@ -1,7 +1,7 @@
 import randomatic from 'randomatic'
 import config from '../config'
 import redis from '../redis'
-import ChatMetadata from './chat_metadata'
+import { ChatMetadata, IChatMetadata } from './'
 
 class Chat {
   static readonly MIN_SIZE = 2
@@ -36,9 +36,10 @@ class Chat {
     // message) and is simply discarded from the database.
     const messageCount = await this.getMessageCount()
     if (messageCount >= config.chatMetadataThreshold) {
-      // TODO: Don't use any
-      const chatMetadata = (await ChatMetadata.findById(this.id)) as any
-      chatMetadata.endedAt = Date.now()
+      const chatMetadata = (await ChatMetadata.findById(
+        this.id
+      )) as IChatMetadata
+      chatMetadata.endedAt = new Date(Date.now())
       chatMetadata.messageCount = messageCount
       await chatMetadata.save()
     } else {

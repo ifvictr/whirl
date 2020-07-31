@@ -1,7 +1,6 @@
 import sampleSize from 'lodash.samplesize'
 import nouns from './data/nouns.json'
-import { Chat } from './models'
-import ChatMetadata from './models/chat_metadata'
+import { Chat, ChatMetadata, IChatMetadata } from './models'
 import redis from './redis'
 
 class Pool {
@@ -56,8 +55,9 @@ class Pool {
     }
 
     // Add user IDs and pseudonyms to metadata
-    // TODO: Don't use any
-    const newChatMetadata = (await ChatMetadata.findById(newChat.id)) as any
+    const newChatMetadata = (await ChatMetadata.findById(
+      newChat.id
+    )) as IChatMetadata
     newChatMetadata.members = membersMetadata
     await newChatMetadata.save()
 

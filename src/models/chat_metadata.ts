@@ -1,6 +1,19 @@
-import mongoose from 'mongoose'
+import mongoose, { Document, Schema } from 'mongoose'
 
-const ChatMetadataSchema = new mongoose.Schema({
+interface ChatMember {
+  id: string
+  noun: string
+}
+
+export interface IChatMetadata extends Document {
+  startedAt: Date
+  size: number
+  members?: ChatMember[]
+  endedAt?: Date
+  messageCount?: number
+}
+
+const ChatMetadataSchema = new Schema({
   _id: {
     type: String,
     required: true,
@@ -30,4 +43,4 @@ const ChatMetadataSchema = new mongoose.Schema({
   }
 })
 
-export default mongoose.model('ChatMetadata', ChatMetadataSchema)
+export default mongoose.model<IChatMetadata>('ChatMetadata', ChatMetadataSchema)

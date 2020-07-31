@@ -1,11 +1,17 @@
-import { App } from '@slack/bolt'
+import { App, BlockButtonAction } from '@slack/bolt'
 import { User } from '../models'
 import pool from '../pool'
 import { capitalize, getEmoji } from '../utils'
 
 export default (app: App) => {
-  app.action('chat_start', async ({ ack, body, client, say }) => {
+  app.action('chat_start', async ({ ack, action, body, client, say }) => {
     await ack()
+
+    // Ensure the action is a BlockButtonAction.
+    if (action.type !== 'button') {
+      return
+    }
+    body = body as BlockButtonAction
 
     const user = await User.get(body.user.id)
     if (!user) {
@@ -35,8 +41,7 @@ export default (app: App) => {
     // Delete the prompt
     await client.chat.delete({
       channel: body.channel!.id,
-      // @ts-ignore
-      ts: body.message.ts
+      ts: body.message!.ts
     })
 
     // Attempt to create a chat. If that fails, add the user to the pool.

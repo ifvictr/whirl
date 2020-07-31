@@ -1,6 +1,11 @@
 import { App } from '@slack/bolt'
+import { MessageAttachment, WebAPICallResult } from '@slack/web-api'
 import { Chat, User } from '../models'
 import { getEmoji } from '../utils'
+
+interface ConversationsHistoryResult extends WebAPICallResult {
+  messages: MessageAttachment[]
+}
 
 export default (app: App) => {
   app.event('app_home_opened', async ({ client, event }) => {
@@ -37,8 +42,8 @@ export default (app: App) => {
       const { messages } = (await client.conversations.history({
         channel: dmChannelId,
         limit: 1
-      })) as any
-      const latestMessageId = messages[0].ts
+      })) as ConversationsHistoryResult
+      const latestMessageId = messages[0].ts as string
 
       // Check the ID of the latest message. If it matches the previously saved
       // ID, then we know that there haven't been any new messages sent in

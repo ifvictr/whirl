@@ -16,7 +16,5 @@
     "target": "es2018"
   },
   "compileOnSave": true,
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

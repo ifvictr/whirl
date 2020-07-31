@@ -3,7 +3,11 @@ import { User } from '../models'
 
 export default (app: App) => {
   app.event('reaction_added', async ({ client, event }) => {
-    // @ts-ignore
+    // Ensure the event contains a ReactionMessageItem.
+    if (!('channel' in event.item)) {
+      return
+    }
+
     const isDM = event.item.channel.startsWith('D')
     if (!isDM) {
       return
@@ -20,7 +24,6 @@ export default (app: App) => {
     }
 
     await client.chat.postEphemeral({
-      // @ts-ignore
       channel: event.item.channel,
       user: event.user,
       text:

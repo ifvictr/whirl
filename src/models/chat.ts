@@ -1,4 +1,3 @@
-// @ts-ignore
 import randomatic from 'randomatic'
 import config from '../config'
 import redis from '../redis'

@@ -1,4 +1,11 @@
-import { View } from '@slack/types'
+import { Block, PlainTextElement, View } from '@slack/types'
+
+// TODO: Remove this after there's a new release of `@slack/types` containing the
+// changes made here: https://github.com/slackapi/node-slack-sdk/pull/1068
+interface HeaderBlock extends Block {
+  type: 'header'
+  text: PlainTextElement
+}
 
 export interface HomeLayoutProps {
   activeChatCount?: number
@@ -34,7 +41,7 @@ export const HomeLayout = ({
         type: 'plain_text',
         text: 'Live Stats'
       }
-    } as any,
+    } as HeaderBlock,
     {
       type: 'section',
       text: {
@@ -61,7 +68,7 @@ export const HomeLayout = ({
         type: 'plain_text',
         text: 'Quick Info'
       }
-    } as any,
+    } as HeaderBlock,
     {
       type: 'section',
       text: {

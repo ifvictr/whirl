@@ -53,7 +53,6 @@ class User {
       return
     }
 
-    // Remove from chat
     await currentChat.removeMember(this.id)
   }
 

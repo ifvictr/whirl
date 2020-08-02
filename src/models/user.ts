@@ -40,11 +40,11 @@ class User {
   }
 
   async isInChat() {
-    return redis.hexists(this.key, 'chat_id')
+    return !!(await redis.hexists(this.key, 'chat_id'))
   }
 
   async isInPool() {
-    return redis.sismember('user_pool', this.id)
+    return !!(await redis.sismember('user_pool', this.id))
   }
 
   async leave() {

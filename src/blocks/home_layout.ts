@@ -1,4 +1,4 @@
-import { Block, PlainTextElement, View } from '@slack/types'
+import { Block, Button, PlainTextElement, View } from '@slack/types'
 
 // TODO: Remove this after there's a new release of `@slack/types` containing the
 // changes made here: https://github.com/slackapi/node-slack-sdk/pull/1068
@@ -8,6 +8,7 @@ interface HeaderBlock extends Block {
 }
 
 export interface HomeLayoutProps {
+  isInChat?: boolean
   activeChatCount?: number
   activeUserCount?: number
   totalChatCount?: number
@@ -16,6 +17,7 @@ export interface HomeLayoutProps {
 }
 
 export const HomeLayout = ({
+  isInChat = false,
   activeChatCount = 0,
   activeUserCount = 0,
   totalChatCount = 0,
@@ -31,6 +33,33 @@ export const HomeLayout = ({
         text:
           ':cyclone: *Whirl* lets you have fun, anonymous chats with random members of your Slack. Just click on the *Messages* tab to start whirlin’!'
       }
+    },
+    {
+      type: 'actions',
+      elements: [
+        ...(isInChat
+          ? [
+              {
+                type: 'button',
+                action_id: 'chat_leave',
+                text: {
+                  type: 'plain_text',
+                  text: 'Leave chat'
+                }
+              }
+            ]
+          : [
+              {
+                type: 'button',
+                action_id: 'chat_start',
+                style: 'primary',
+                text: {
+                  type: 'plain_text',
+                  text: 'Join a chat'
+                }
+              }
+            ])
+      ] as Button[]
     },
     {
       type: 'divider'

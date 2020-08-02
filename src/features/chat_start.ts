@@ -62,7 +62,7 @@ export default (app: App) => {
 
       const noun = (await member.getNoun()) as string
       const displayName = `Anonymous ${capitalize(noun)}`
-      const emoji = getEmoji(noun) as string
+      const emoji = getEmoji(noun)
       // Send intro message to everyone but the member being introduced
       for (const otherMemberId of members) {
         if (otherMemberId === memberId) {

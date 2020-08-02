@@ -48,7 +48,7 @@ export default (app: App) => {
     // Broadcast the message to other chat members
     const noun = (await user.getNoun()) as string
     const displayName = `Anonymous ${capitalize(noun)}`
-    const emoji = getEmoji(noun) as string
+    const emoji = getEmoji(noun)
     for (const memberId of await currentChat.getMembers()) {
       // Don't send the message to the sender again
       if (memberId === event.user) {

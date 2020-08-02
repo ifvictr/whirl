@@ -31,7 +31,7 @@ export default (app: App) => {
     // Broadcast leave message to current chat
     const noun = (await user.getNoun()) as string
     const displayName = `Anonymous ${capitalize(noun)}`
-    const emoji = getEmoji(noun) as string
+    const emoji = getEmoji(noun)
     const message = `:${emoji}: _${displayName} left the chat._`
     for (const memberId of await chat.getMembers()) {
       if (memberId === command.user_id) {
@@ -96,7 +96,7 @@ export default (app: App) => {
       // Broadcast leave message to current chat
       const noun = (await user.getNoun()) as string
       const displayName = `Anonymous ${capitalize(noun)}`
-      const emoji = getEmoji(noun) as string
+      const emoji = getEmoji(noun)
       const message = `:${emoji}: _${displayName} left the chat._`
       for (const memberId of await chat.getMembers()) {
         if (memberId === command.user_id) {
@@ -149,7 +149,7 @@ export default (app: App) => {
 
       const noun = (await member.getNoun()) as string
       const displayName = `Anonymous ${capitalize(noun)}`
-      const emoji = getEmoji(noun) as string
+      const emoji = getEmoji(noun)
       // Send intro message to everyone but the member being introduced
       for (const otherMemberId of members) {
         if (otherMemberId === memberId) {

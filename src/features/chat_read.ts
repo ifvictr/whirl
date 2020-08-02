@@ -28,8 +28,7 @@ export default (app: App) => {
     // Send a read receipt to everyone else in the chat
     const members = await chat.getMembers()
     const noun = (await user.getNoun()) as string
-    const emoji =
-      members.length > Chat.MIN_SIZE ? (getEmoji(noun) as string) : 'eyes'
+    const emoji = members.length > Chat.MIN_SIZE ? getEmoji(noun) : 'eyes'
     for (const memberId of members) {
       // Don't send a receipt to self
       if (memberId === event.user) {

@@ -36,12 +36,7 @@ class Chat {
     // message) and is simply discarded from the database.
     const messageCount = await this.getMessageCount()
     if (messageCount >= config.chatMetadataThreshold) {
-      const chatMetadata = (await ChatMetadata.findById(
-        this.id
-      )) as IChatMetadata
-      chatMetadata.endedAt = new Date(Date.now())
-      chatMetadata.messageCount = messageCount
-      await chatMetadata.save()
+      await this.saveMetadata()
     } else {
       await ChatMetadata.findByIdAndDelete(this.id)
     }
@@ -100,6 +95,13 @@ class Chat {
 
   async getSize() {
     return redis.scard(`${this.key}:members`)
+  }
+
+  private async saveMetadata() {
+    const chatMetadata = (await ChatMetadata.findById(this.id)) as IChatMetadata
+    chatMetadata.endedAt = new Date(Date.now())
+    chatMetadata.messageCount = await this.getMessageCount()
+    await chatMetadata.save()
   }
 
   static async create(size: number = Chat.MIN_SIZE) {

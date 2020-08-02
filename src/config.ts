@@ -15,7 +15,7 @@ const config: Config = {
   botToken: process.env.SLACK_CLIENT_BOT_TOKEN,
   signingSecret: process.env.SLACK_CLIENT_SIGNING_SECRET,
   chatMetadataThreshold:
-    parseInt(process.env.CHAT_METADATA_THRESHOLD || '') || 3
+    parseInt(process.env.CHAT_METADATA_THRESHOLD || '') ?? 3
 }
 
 export default config

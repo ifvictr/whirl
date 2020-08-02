@@ -4,7 +4,7 @@ import pool from '../pool'
 import { capitalize, getEmoji } from '../utils'
 
 export default (app: App) => {
-  app.action('chat_start', async ({ ack, action, body, client, say }) => {
+  app.action('chat_start', async ({ ack, action, body, client }) => {
     await ack()
 
     // Ensure the action is a BlockButtonAction.
@@ -21,7 +21,7 @@ export default (app: App) => {
     // User can't join the pool again if they're in it
     if (await user.isInPool()) {
       await client.chat.postEphemeral({
-        channel: body.channel!.id,
+        channel: body.user.id,
         user: body.user.id,
         text: 'You’re already in :beach_with_umbrella: *The Waiting Pool*.'
       })
@@ -31,26 +31,30 @@ export default (app: App) => {
     // User can't join another chat if they're in one already
     if (await user.isInChat()) {
       await client.chat.postEphemeral({
-        channel: body.channel!.id,
+        channel: body.user.id,
         user: body.user.id,
         text: 'You can’t join another chat because you’re in one already.'
       })
       return
     }
 
-    // Delete the prompt
-    await client.chat.delete({
-      channel: body.channel!.id,
-      ts: body.message!.ts
-    })
+    // Delete the prompt if the action originated from a message.
+    if ('message' in body) {
+      await client.chat.delete({
+        channel: body.user.id,
+        ts: body.message!.ts
+      })
+    }
 
     // Attempt to create a chat. If that fails, add the user to the pool.
     const chat = await pool.attemptToCreateChat(body.user.id)
     if (!chat) {
       await pool.add(body.user.id)
-      await say(
-        'You’ve been added to :beach_with_umbrella: *The Waiting Pool*! A chat will start as soon as more people join.'
-      )
+      await client.chat.postMessage({
+        channel: body.user.id,
+        text:
+          'You’ve been added to :beach_with_umbrella: *The Waiting Pool*! A chat will start as soon as more people join.'
+      })
       return
     }
 

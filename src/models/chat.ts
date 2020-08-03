@@ -32,7 +32,7 @@ class Chat {
     // Check the chat's total message count. If it's at least the minimum,
     // we'll update the metadata with the ending timestamp and the amount of
     // messages sent. But if it falls below that, it's considered insignificant
-    // (i.e., a user running /next many times in a row without having sent a
+    // (e.g., a user running /next many times in a row without having sent a
     // message) and is simply discarded from the database.
     const messageCount = await this.getMessageCount()
     if (messageCount >= config.chatMetadataThreshold) {

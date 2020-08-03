@@ -16,7 +16,7 @@ export default (app: App) => {
       return
     }
 
-    // User can't start another chat if they're already in one
+    // User can't end a chat if they're not in one
     if (!(await user.isInChat())) {
       await client.chat.postEphemeral({
         channel: command.channel_id,
@@ -143,7 +143,6 @@ export default (app: App) => {
 
     // Introduce members to each other
     const members = await newChat.getMembers()
-    // Loop over all the identities of the chat members
     for (const memberId of members) {
       const member = (await User.get(memberId)) as User
 

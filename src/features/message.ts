@@ -66,7 +66,7 @@ export default (app: App) => {
       const member = (await User.get(memberId)) as User
       const dmChannelId = (await member.getDmChannelId()) as string
 
-      // Send message with pseudonym, then update the read r eceipt so it's on
+      // Send message with pseudonym, then update the read receipt so it's on
       // that message.
       const { ts: newMessageId } = (await client.chat.postMessage({
         channel: dmChannelId,

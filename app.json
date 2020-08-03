@@ -1,0 +1,28 @@
+{
+  "name": "Whirl",
+  "description": "Fun, anonymous chats with random members of your Slack!",
+  "logo": "https://files.ifvictr.com/2020/06/whirl.png",
+  "repository": "https://github.com/ifvictr/whirl",
+  "addons": ["heroku-redis"],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "SLACK_CLIENT_BOT_TOKEN": {
+      "description": "Bot user’s OAuth access token. Usually starts with `xoxb-`."
+    },
+    "SLACK_CLIENT_SIGNING_SECRET": {
+      "description": "Signing secret from Slack used to confirm source of incoming messages."
+    },
+    "DATABASE_URL": {
+      "description": "Your MongoDB database’s URL. Used to store chat metadata."
+    },
+    "CHAT_METADATA_THRESHOLD": {
+      "description": "The minimum amount of messages needed for a chat’s metadata to be saved.",
+      "value": "3",
+      "required": false
+    }
+  }
+}

@@ -50,8 +50,13 @@ export const updateReadReceipt = async ({
 
   // Save the ID of the latest message, then add the reaction to it.
   await sender.setLastReadMessageId(receiver.id, messageId)
-  await client.reactions.add({
-    ...reactOptions,
-    timestamp: messageId
-  })
+  try {
+    await client.reactions.add({
+      ...reactOptions,
+      timestamp: messageId
+    })
+  } catch {
+    // Ignore errors like `already_reacted`. This usually happens when Slack
+    // resends the payload when we don't respond in time.
+  }
 }

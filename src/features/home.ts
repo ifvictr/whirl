@@ -17,7 +17,7 @@ export default (app: App) => {
       return
     }
 
-    // Get info to display the appropriate button
+    // Get the user's chat status to display the appropriate button
     const user = await User.get(event.user)
     const isInChat = user !== null && (await user.isInChat())
 

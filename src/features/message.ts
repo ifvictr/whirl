@@ -49,7 +49,7 @@ export default (app: App) => {
     const displayName = `Anonymous ${capitalize(noun)}`
     const emoji = getEmoji(noun)
     for (const memberId of await currentChat.getMembers()) {
-      // Don't send the message to the sender again
+      // Don't send the message back to the sender
       if (memberId === event.user) {
         continue
       }
@@ -65,7 +65,7 @@ export default (app: App) => {
       })
     }
 
-    // Increment the message counts
+    // Increment the message counters
     await redis.hincrby(currentChat.key, 'message_count', 1)
     await redis.incr('count:total_messages_sent')
   })

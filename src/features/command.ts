@@ -28,6 +28,8 @@ export default (app: App) => {
 
     const chat = (await user.getCurrentChat()) as Chat
     const noun = (await user.getNoun()) as string
+
+    // Prompt the user to join another chat after they leave
     await user.leave()
     await client.chat.postMessage({
       channel: command.user_id,
@@ -35,7 +37,7 @@ export default (app: App) => {
       blocks: ChatPrompt()
     })
 
-    // Broadcast leave message to current chat
+    // Let the rest of the chat know that they left
     const displayName = `Anonymous ${capitalize(noun)}`
     const emoji = getEmoji(noun)
     const message = `:${emoji}: _${displayName} left the chat._`
@@ -88,9 +90,10 @@ export default (app: App) => {
     if (await user.isInChat()) {
       const chat = (await user.getCurrentChat()) as Chat
       const noun = (await user.getNoun()) as string
+
       await user.leave()
 
-      // Broadcast leave message to current chat
+      // Let the rest of the chat know that they left
       const displayName = `Anonymous ${capitalize(noun)}`
       const emoji = getEmoji(noun)
       const message = `:${emoji}: _${displayName} left the chat._`
@@ -136,10 +139,10 @@ export default (app: App) => {
     for (const memberId of members) {
       const member = (await User.get(memberId)) as User
 
+      // Send intro message to everyone but the member being introduced
       const noun = (await member.getNoun()) as string
       const displayName = `Anonymous ${capitalize(noun)}`
       const emoji = getEmoji(noun)
-      // Send intro message to everyone but the member being introduced
       for (const otherMemberId of members) {
         if (otherMemberId === memberId) {
           continue

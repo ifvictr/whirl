@@ -4,7 +4,7 @@ import { User } from '../models'
 
 export default (app: App) => {
   app.event('app_home_opened', async ({ event, say }) => {
-    // Show intro message if this is the user's first time in a DM with Whirl
+    // Only show the intro message if the user doesn't exist in the DB yet
     if (await User.exists(event.user)) {
       return
     }

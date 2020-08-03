@@ -28,12 +28,12 @@ export default (app: App) => {
       return
     }
 
-    // User can't join another chat if they're in one already
+    // User can't join another chat while they're in one
     if (await user.isInChat()) {
       await client.chat.postEphemeral({
         channel: body.user.id,
         user: body.user.id,
-        text: 'You can’t join another chat because you’re in one already.'
+        text: 'You can’t join another chat while you’re in one.'
       })
       return
     }
@@ -63,10 +63,10 @@ export default (app: App) => {
     for (const memberId of members) {
       const member = (await User.get(memberId)) as User
 
+      // Send intro message to everyone but the member being introduced
       const noun = (await member.getNoun()) as string
       const displayName = `Anonymous ${capitalize(noun)}`
       const emoji = getEmoji(noun)
-      // Send intro message to everyone but the member being introduced
       for (const otherMemberId of members) {
         if (otherMemberId === memberId) {
           continue

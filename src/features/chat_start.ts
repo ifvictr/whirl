@@ -47,8 +47,8 @@ export default (app: App) => {
     }
 
     // Attempt to create a chat. If that fails, add the user to the pool.
-    const chat = await pool.attemptToCreateChat(body.user.id)
-    if (!chat) {
+    const newChat = await pool.attemptToCreateChat(body.user.id)
+    if (!newChat) {
       await pool.add(body.user.id)
       await client.chat.postMessage({
         channel: body.user.id,
@@ -59,8 +59,7 @@ export default (app: App) => {
     }
 
     // Introduce members to each other
-    const members = await chat.getMembers()
-    // Loop over all the identities of the chat members
+    const members = await newChat.getMembers()
     for (const memberId of members) {
       const member = (await User.get(memberId)) as User
 

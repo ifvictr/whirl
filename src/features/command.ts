@@ -134,24 +134,6 @@ export default (app: App) => {
       return
     }
 
-    // Introduce members to each other
-    const members = await newChat.getMembers()
-    for (const memberId of members) {
-      const member = (await User.get(memberId)) as User
-
-      // Send intro message to everyone but the member being introduced
-      const noun = (await member.getNoun()) as string
-      const displayName = `Anonymous ${capitalize(noun)}`
-      const emoji = getEmoji(noun)
-      for (const otherMemberId of members) {
-        if (otherMemberId === memberId) {
-          continue
-        }
-        await client.chat.postMessage({
-          channel: otherMemberId,
-          text: `You are now talking to :${emoji}: *${displayName}*. Say hi! To end this chat at any time, run *\`/next\`*.`
-        })
-      }
-    }
+    await newChat.introduceAllMembers(client)
   })
 }

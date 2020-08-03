@@ -136,7 +136,7 @@ export default (app: App) => {
       await client.chat.postMessage({
         channel: command.user_id,
         text:
-          'You left the chat and moved to :beach_with_umbrella: *The Waiting Pool*! A chat will start as soon as there are more people.'
+          'You’ve been added to :beach_with_umbrella: *The Waiting Pool*! A chat will start as soon as more people join.'
       })
       return
     }

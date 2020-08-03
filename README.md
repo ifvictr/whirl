@@ -1,6 +1,96 @@
-# 🌀 Whirl
+<p align="center">
+    <img alt="Whirl" width="128" src="https://files.ifvictr.com/2020/06/whirl.png" />
+</p>
+<h1 align="center">Whirl</h1>
+<p align="center"><i>Fun, anonymous chats with random members of your Slack!</i></p>
 
-Fun, anonymous chats with random members of your Slack.
+## Deploy
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+## Setup
+
+Whirl comprises of two components: 1) the web server for receiving and responding to event payloads from Slack, and 2) the Slack app itself.
+
+### Environment variables
+
+Here are all the variables you need to set up on the server, with hints.
+
+```bash
+DATABASE_URL=mongodb://…
+REDIS_URL=redis://…
+SLACK_CLIENT_BOT_TOKEN=xoxb-…
+SLACK_CLIENT_SIGNING_SECRET=xxxx…
+CHAT_METADATA_THRESHOLD=3
+```
+
+### Starting the server
+
+_This section is only relevent to you if you’ve decided to run Whirl on a platform other than Heroku._
+
+```bash
+git clone https://github.com/ifvictr/whirl
+cd whirl
+
+# Install dependencies
+yarn
+
+# Start Whirl in production! This will build the source files and then run them.
+yarn start
+# Or, if you need to run it in development mode instead.
+yarn dev
+```
+
+### Creating the Slack app
+
+For Whirl to work, you’ll need to [register a Slack app](https://api.slack.com/apps) with the appropriate OAuth permissions, event subscriptions, and commands.
+
+#### Basic Information
+
+Save the **Signing Secret** (not Client Secret) for the `SLACK_CLIENT_SIGNING_SECRET` environment variable.
+
+#### App Home
+
+For Whirl to work, you’ll need to enable both the **Home** and **Messages** tabs of the app.
+
+#### Interactivity & Shortcuts
+
+For the **Request URL** under the **Interactivity** section, enter `http://<YOUR DOMAIN HERE>/slack/events`. This will be used for the app’s buttons.
+
+#### Slash Commands
+
+The following commands are needed. Enter the same request URL you used in the previous section.
+
+- `/end`: Ends the current chat
+- `/next`: Go to the next chat
+
+#### OAuth & Permissions
+
+Install the Slack app to your desired Slack workspace first. You’ll get a **Bot User OAuth Access Token** which will be used for the `SLACK_CLIENT_BOT_TOKEN` environment variable.
+
+The following bot token scopes are required:
+
+- `chat:write`: Used for sending messages.
+- `chat:write.customize`: Used for sending messages to the receiving side of a chat with the sender’s pseudonym.
+- `commands`: Used for `/end` and `/next`.
+- `im:history`: Used for reading the messages a user sends in a DM with Whirl. If they’re in a chat, Whirl will send it to the other users with a pseudonym.
+- `reactions:read`: Used for notifying users that reactions aren’t currently supported 😞
+- `reactions:write`: Used for chat read receipts.
+
+#### Event Subscriptions
+
+Subscribe to the following bot events:
+
+- `app_home_opened`
+- `message.im`
+- `reaction_added`
+
+After you’ve followed all the above steps, you should see something like this in the console:
+
+```bash
+Starting Whirl…
+Listening on port 3000
+```
 
 ## License
 

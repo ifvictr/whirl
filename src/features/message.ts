@@ -16,8 +16,7 @@ export default (app: App) => {
       await client.chat.postEphemeral({
         channel: event.channel,
         user: event.user,
-        text:
-          'You’re not in a chat right now, so this won’t go anywhere. Run *`/next`* to join one!'
+        text: 'You’re not in a chat right now. Run *`/next`* to join one!'
       })
       return
     }
@@ -39,7 +38,7 @@ export default (app: App) => {
         channel: event.channel,
         user: event.user,
         text:
-          'Sorry, file attachments aren’t currently supported. The text portion will still be sent, however.'
+          'Sorry, file attachments aren’t currently supported. The text portion will still be sent though.'
       })
     }
 
@@ -61,7 +60,6 @@ export default (app: App) => {
         channel: (await member.getDmChannelId()) as string,
         text: removeSpecialTags(event.text!),
         attachments: event.attachments,
-        // blocks: event.blocks,
         icon_emoji: `:${emoji}:`,
         username: displayName
       })

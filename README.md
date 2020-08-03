@@ -85,6 +85,8 @@ Subscribe to the following bot events:
 - `message.im`
 - `reaction_added`
 
+The request URL is also the same here.
+
 After you’ve followed all the above steps, you should see something like this in the console:
 
 ```bash

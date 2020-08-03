@@ -1,8 +1,15 @@
 import { App, subtype } from '@slack/bolt'
+import { WebAPICallResult } from '@slack/web-api'
 import { channelType } from '../middlewares'
 import { Chat, User } from '../models'
 import redis from '../redis'
 import { capitalize, getEmoji, removeSpecialTags } from '../utils'
+import { updateReadReceipt } from '../utils/slack'
+
+interface ChatPostMessageResult extends WebAPICallResult {
+  channel: string
+  ts: string
+}
 
 export default (app: App) => {
   app.message(channelType('im'), async ({ client, event }) => {
@@ -45,23 +52,35 @@ export default (app: App) => {
     const currentChat = (await user.getCurrentChat()) as Chat
 
     // Broadcast the message to other chat members
+    const members = await currentChat.getMembers()
     const noun = (await user.getNoun()) as string
     const displayName = `Anonymous ${capitalize(noun)}`
     const emoji = getEmoji(noun)
-    for (const memberId of await currentChat.getMembers()) {
+    const receiptEmoji = members.length > Chat.MIN_SIZE ? noun : 'eyes'
+    for (const memberId of members) {
       // Don't send the message back to the sender
       if (memberId === event.user) {
         continue
       }
 
       const member = (await User.get(memberId)) as User
+      const dmChannelId = (await member.getDmChannelId()) as string
 
-      await client.chat.postMessage({
-        channel: (await member.getDmChannelId()) as string,
+      // Send message with pseudonym, then update the read r eceipt so it's on
+      // that message.
+      const { ts: newMessageId } = (await client.chat.postMessage({
+        channel: dmChannelId,
         text: removeSpecialTags(event.text!),
         attachments: event.attachments,
         icon_emoji: `:${emoji}:`,
         username: displayName
+      })) as ChatPostMessageResult
+      await updateReadReceipt({
+        client,
+        sender: user,
+        receiver: member,
+        messageId: newMessageId,
+        emoji: receiptEmoji
       })
     }
 

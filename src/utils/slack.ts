@@ -57,6 +57,6 @@ export const updateReadReceipt = async ({
     })
   } catch {
     // Ignore errors like `already_reacted`. This usually happens when Slack
-    // resends the payload when we don't respond in time.
+    // sends the same payload multiple times.
   }
 }

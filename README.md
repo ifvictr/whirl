@@ -14,7 +14,7 @@ Whirl comprises of four components:
 
 1. The web server for receiving and responding to event payloads from Slack
 2. A **MongoDB database** to save chat metadata (e.g., start time, message count, participants, etc.) after a chat has ended
-3. A **Redis cache** for temporarily storing the users that belong in a chat and should receive messages
+3. A **Redis cache** for storing references to the users who should receive messages from a chat while it is ongoing
 4. The Slack app itself
 
 ### Environment variables

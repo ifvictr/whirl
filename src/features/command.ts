@@ -27,23 +27,7 @@ export default (app: App) => {
     }
 
     const chat = (await user.getCurrentChat()) as Chat
-
-    // Broadcast leave message to current chat
     const noun = (await user.getNoun()) as string
-    const displayName = `Anonymous ${capitalize(noun)}`
-    const emoji = getEmoji(noun)
-    const message = `:${emoji}: _${displayName} left the chat._`
-    for (const memberId of await chat.getMembers()) {
-      if (memberId === command.user_id) {
-        continue
-      }
-
-      await client.chat.postMessage({
-        channel: memberId,
-        text: message
-      })
-    }
-
     await user.leave()
     await client.chat.postMessage({
       channel: command.user_id,
@@ -51,10 +35,21 @@ export default (app: App) => {
       blocks: ChatPrompt()
     })
 
+    // Broadcast leave message to current chat
+    const displayName = `Anonymous ${capitalize(noun)}`
+    const emoji = getEmoji(noun)
+    const message = `:${emoji}: _${displayName} left the chat._`
+    const members = await chat.getMembers()
+    for (const memberId of members) {
+      await client.chat.postMessage({
+        channel: memberId,
+        text: message
+      })
+    }
+
     // Kick remaining members if the chat size drops below the minimum
-    const updatedMembers = await chat.getMembers()
-    if (updatedMembers.length < Chat.MIN_SIZE) {
-      for (const memberId of updatedMembers) {
+    if (members.length < Chat.MIN_SIZE) {
+      for (const memberId of members) {
         await client.chat.postMessage({
           channel: memberId,
           text: '_This chat has ended._'
@@ -92,29 +87,24 @@ export default (app: App) => {
 
     if (await user.isInChat()) {
       const chat = (await user.getCurrentChat()) as Chat
+      const noun = (await user.getNoun()) as string
+      await user.leave()
 
       // Broadcast leave message to current chat
-      const noun = (await user.getNoun()) as string
       const displayName = `Anonymous ${capitalize(noun)}`
       const emoji = getEmoji(noun)
       const message = `:${emoji}: _${displayName} left the chat._`
-      for (const memberId of await chat.getMembers()) {
-        if (memberId === command.user_id) {
-          continue
-        }
-
+      const members = await chat.getMembers()
+      for (const memberId of members) {
         await client.chat.postMessage({
           channel: memberId,
           text: message
         })
       }
 
-      await user.leave()
-
       // Kick remaining members if the chat size drops below the minimum
-      const updatedMembers = await chat.getMembers()
-      if (updatedMembers.length < Chat.MIN_SIZE) {
-        for (const memberId of updatedMembers) {
+      if (members.length < Chat.MIN_SIZE) {
+        for (const memberId of members) {
           await client.chat.postMessage({
             channel: memberId,
             text: '_This chat has ended._'

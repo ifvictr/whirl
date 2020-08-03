@@ -10,17 +10,29 @@
 
 ## Setup
 
-Whirl comprises of two components: 1) the web server for receiving and responding to event payloads from Slack, and 2) the Slack app itself.
+Whirl comprises of four components:
+
+1. The web server for receiving and responding to event payloads from Slack
+2. A **MongoDB database** to save chat metadata (e.g., start time, message count, participants, etc.) after a chat has ended
+3. A **Redis cache** for temporarily storing the users that belong in a chat and should receive messages
+4. The Slack app itself
 
 ### Environment variables
 
 Here are all the variables you need to set up on the server, with hints.
 
 ```bash
+# Port to run the server on
+PORT=3000
+
 DATABASE_URL=mongodb://…
 REDIS_URL=redis://…
+
+# App config. Obtained from the "Basic Information" page of your app.
 SLACK_CLIENT_BOT_TOKEN=xoxb-…
 SLACK_CLIENT_SIGNING_SECRET=xxxx…
+
+# A chat must have at least this many messages for its metadata to be saved.
 CHAT_METADATA_THRESHOLD=3
 ```
 

@@ -12,8 +12,8 @@ const config: Config = {
   port: parseInt(process.env.PORT || '') || 3000,
   redisUrl: process.env.REDIS_URL || '',
   // Slack-specific config
-  botToken: process.env.SLACK_CLIENT_BOT_TOKEN,
-  signingSecret: process.env.SLACK_CLIENT_SIGNING_SECRET,
+  botToken: process.env.SLACK_BOT_TOKEN,
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
   chatMetadataThreshold:
     parseInt(process.env.CHAT_METADATA_THRESHOLD || '') ?? 3
 }

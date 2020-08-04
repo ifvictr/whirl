@@ -34,8 +34,8 @@ DATABASE_URL=mongodb://…
 REDIS_URL=redis://…
 
 # App config. Obtained from the "Basic Information" page of your app.
-SLACK_CLIENT_BOT_TOKEN=xoxb-…
-SLACK_CLIENT_SIGNING_SECRET=xxxx…
+SLACK_BOT_TOKEN=xoxb-…
+SLACK_SIGNING_SECRET=xxxx…
 
 # A chat must have at least this many messages for its metadata to be saved.
 CHAT_METADATA_THRESHOLD=3
@@ -64,7 +64,7 @@ For Whirl to work, you’ll need to [register a Slack app](https://api.slack.com
 
 #### Basic Information
 
-Save the **Signing Secret** (not Client Secret) for the `SLACK_CLIENT_SIGNING_SECRET` environment variable.
+Save the **Signing Secret** (not Client Secret) for the `SLACK_SIGNING_SECRET` environment variable.
 
 #### App Home
 
@@ -83,7 +83,7 @@ The following commands are needed. Enter the same request URL you used in the pr
 
 #### OAuth & Permissions
 
-Install the Slack app to your desired Slack workspace first. You’ll get a **Bot User OAuth Access Token** which will be used for the `SLACK_CLIENT_BOT_TOKEN` environment variable.
+Install the Slack app to your desired Slack workspace first. You’ll get a **Bot User OAuth Access Token** which will be used for the `SLACK_BOT_TOKEN` environment variable.
 
 The following bot token scopes are required:
 

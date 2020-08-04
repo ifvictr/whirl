@@ -1,5 +1,6 @@
 import { WebClient } from '@slack/web-api'
 import randomatic from 'randomatic'
+import { ChatPrompt } from '../blocks'
 import config from '../config'
 import { User } from '../models'
 import redis from '../redis'
@@ -50,6 +51,11 @@ class Chat {
 
   async getMembers() {
     return redis.smembers(`${this.key}:members`)
+  }
+
+  async hasEnoughMembers() {
+    const currentSize = await this.getSize()
+    return currentSize >= Chat.MIN_SIZE
   }
 
   async addMember(userId: string, noun: string) {
@@ -116,6 +122,31 @@ class Chat {
         await client.chat.postMessage({
           channel: otherMemberId,
           text: `You are now talking to :${emoji}: *${displayName}*. Say hi! To end this chat at any time, run *\`/next\`*.`
+        })
+      }
+    }
+  }
+
+  async broadcastLeaveMessage(client: WebClient, noun: string) {
+    const displayName = `Anonymous ${capitalize(noun)}`
+    const emoji = getEmoji(noun)
+
+    const hasEnoughMembers = await this.hasEnoughMembers()
+    const message = `:${emoji}: _${displayName} left${
+      !hasEnoughMembers ? ', ending' : ''
+    } the chat._`
+
+    for (const memberId of await this.getMembers()) {
+      await client.chat.postMessage({
+        channel: memberId,
+        text: message
+      })
+
+      if (!hasEnoughMembers) {
+        await client.chat.postMessage({
+          channel: memberId,
+          text: 'Want to join another one?',
+          blocks: ChatPrompt()
         })
       }
     }

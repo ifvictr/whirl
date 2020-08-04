@@ -2,7 +2,6 @@ import { App } from '@slack/bolt'
 import { ChatPrompt } from '../blocks'
 import { Chat, User } from '../models'
 import pool from '../pool'
-import { capitalize, getEmoji } from '../utils'
 
 export default (app: App) => {
   app.command('/end', async ({ ack, client, command, context, respond }) => {
@@ -37,31 +36,9 @@ export default (app: App) => {
       blocks: ChatPrompt()
     })
 
-    // Let the rest of the chat know that they left
-    const displayName = `Anonymous ${capitalize(noun)}`
-    const emoji = getEmoji(noun)
-    const message = `:${emoji}: _${displayName} left the chat._`
-    const members = await chat.getMembers()
-    for (const memberId of members) {
-      await client.chat.postMessage({
-        channel: memberId,
-        text: message
-      })
-    }
+    await chat.broadcastLeaveMessage(client, noun)
 
-    // Kick remaining members if the chat size drops below the minimum
-    if (members.length < Chat.MIN_SIZE) {
-      for (const memberId of members) {
-        await client.chat.postMessage({
-          channel: memberId,
-          text: '_This chat has ended._'
-        })
-        await client.chat.postMessage({
-          channel: memberId,
-          text: 'Want to join another one?',
-          blocks: ChatPrompt()
-        })
-      }
+    if (!(await chat.hasEnoughMembers())) {
       await chat.end()
     }
   })
@@ -93,31 +70,9 @@ export default (app: App) => {
 
       await user.leave()
 
-      // Let the rest of the chat know that they left
-      const displayName = `Anonymous ${capitalize(noun)}`
-      const emoji = getEmoji(noun)
-      const message = `:${emoji}: _${displayName} left the chat._`
-      const members = await chat.getMembers()
-      for (const memberId of members) {
-        await client.chat.postMessage({
-          channel: memberId,
-          text: message
-        })
-      }
+      await chat.broadcastLeaveMessage(client, noun)
 
-      // Kick remaining members if the chat size drops below the minimum
-      if (members.length < Chat.MIN_SIZE) {
-        for (const memberId of members) {
-          await client.chat.postMessage({
-            channel: memberId,
-            text: '_This chat has ended._'
-          })
-          await client.chat.postMessage({
-            channel: memberId,
-            text: 'Want to join another one?',
-            blocks: ChatPrompt()
-          })
-        }
+      if (!(await chat.hasEnoughMembers())) {
         await chat.end()
       }
     }

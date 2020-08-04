@@ -2,8 +2,10 @@ interface Config {
   databaseUrl: string
   port: number
   redisUrl: string
-  botToken?: string
   signingSecret?: string
+  stateSecret?: string
+  clientId?: string
+  clientSecret?: string
   chatMetadataThreshold: number
 }
 
@@ -12,8 +14,10 @@ const config: Config = {
   port: parseInt(process.env.PORT || '') || 3000,
   redisUrl: process.env.REDIS_URL || '',
   // Slack-specific config
-  botToken: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
+  stateSecret: process.env.SLACK_STATE_SECRET,
+  clientId: process.env.SLACK_CLIENT_ID,
+  clientSecret: process.env.SLACK_CLIENT_SECRET,
   chatMetadataThreshold:
     parseInt(process.env.CHAT_METADATA_THRESHOLD || '') ?? 3
 }

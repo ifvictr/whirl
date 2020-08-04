@@ -2,6 +2,7 @@ import { App } from '@slack/bolt'
 import mongoose from 'mongoose'
 import config from './config'
 import * as features from './features'
+import { Installation, IInstallation } from './models'
 
 const init = async () => {
   console.log('Starting Whirl…')
@@ -16,7 +17,36 @@ const init = async () => {
   // Initialize Slack app
   const app = new App({
     signingSecret: config.signingSecret,
-    token: config.botToken
+    clientId: config.clientId,
+    clientSecret: config.clientSecret,
+    stateSecret: config.stateSecret,
+    scopes: [
+      'chat:write',
+      'chat:write.customize',
+      'commands',
+      'im:history',
+      'reactions:read',
+      'reactions:write'
+    ],
+    installationStore: {
+      storeInstallation: async installation => {
+        // Prevent duplicate installations being stored
+        const installationQuery = {
+          'team.id': installation.team.id
+        }
+        if (await Installation.exists(installationQuery)) {
+          await Installation.deleteOne(installationQuery)
+        }
+
+        await Installation.create(installation)
+      },
+      fetchInstallation: async query => {
+        const installation = (await Installation.findOne({
+          'team.id': query.teamId
+        })) as IInstallation
+        return installation
+      }
+    }
   })
 
   // Load feature modules

@@ -106,7 +106,7 @@ class Chat {
     return redis.scard(`${this.key}:members`)
   }
 
-  async introduceAllMembers(client: WebClient) {
+  async sendIntroMessages(client: WebClient) {
     const members = await this.getMembers()
     for (const memberId of members) {
       const member = (await User.get(memberId)) as User
@@ -127,7 +127,7 @@ class Chat {
     }
   }
 
-  async broadcastLeaveMessage(client: WebClient, noun: string) {
+  async sendLeaveMessages(client: WebClient, noun: string) {
     const displayName = `Anonymous ${capitalize(noun)}`
     const emoji = getEmoji(noun)
 

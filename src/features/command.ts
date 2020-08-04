@@ -36,7 +36,7 @@ export default (app: App) => {
       blocks: ChatPrompt()
     })
 
-    await chat.broadcastLeaveMessage(client, noun)
+    await chat.sendLeaveMessages(client, noun)
 
     if (!(await chat.hasEnoughMembers())) {
       await chat.end()
@@ -70,7 +70,7 @@ export default (app: App) => {
 
       await user.leave()
 
-      await chat.broadcastLeaveMessage(client, noun)
+      await chat.sendLeaveMessages(client, noun)
 
       if (!(await chat.hasEnoughMembers())) {
         await chat.end()
@@ -89,6 +89,6 @@ export default (app: App) => {
       return
     }
 
-    await newChat.introduceAllMembers(client)
+    await newChat.sendIntroMessages(client)
   })
 }

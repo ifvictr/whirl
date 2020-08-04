@@ -57,6 +57,6 @@ export default (app: App) => {
       return
     }
 
-    await newChat.introduceAllMembers(client)
+    await newChat.sendIntroMessages(client)
   })
 }

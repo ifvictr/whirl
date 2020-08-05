@@ -6,6 +6,7 @@ interface ChatMember {
 }
 
 export interface IChatMetadata extends Document {
+  teamId: string
   startedAt: Date
   size: number
   members?: ChatMember[]
@@ -15,6 +16,11 @@ export interface IChatMetadata extends Document {
 
 const ChatMetadataSchema = new Schema({
   _id: {
+    type: String,
+    required: true,
+    immutable: true
+  },
+  teamId: {
     type: String,
     required: true,
     immutable: true

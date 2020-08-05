@@ -91,6 +91,7 @@ class UserPool {
     // Store the base metadata in Mongo
     await ChatMetadata.create({
       _id: randomId,
+      teamId: this.teamId,
       startedAt,
       size
     })

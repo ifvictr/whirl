@@ -4,7 +4,7 @@ import nouns from '../data/nouns.json'
 import redis from '../redis'
 import { Chat, ChatMetadata, IChatMetadata } from '.'
 
-class UserPool {
+export class UserPool {
   readonly teamId: string
   readonly key: string
 
@@ -99,5 +99,3 @@ class UserPool {
     return newChat
   }
 }
-
-export default UserPool

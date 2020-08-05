@@ -1,7 +1,7 @@
 import redis from '../redis'
 import { Chat } from '.'
 
-class User {
+export class User {
   readonly id: string
   readonly teamId: string
   readonly key: string
@@ -81,5 +81,3 @@ class User {
     return new User(userId, teamId)
   }
 }
-
-export default User

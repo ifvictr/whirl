@@ -1,7 +1,7 @@
-import { Installation } from '@slack/oauth'
+import { Installation as SlackInstallation } from '@slack/oauth'
 import mongoose, { Document, Schema } from 'mongoose'
 
-export type IInstallation = Installation & Document
+export type IInstallation = SlackInstallation & Document
 
 const InstallationSchema = new Schema({
   appId: String,
@@ -33,4 +33,7 @@ const InstallationSchema = new Schema({
   }
 })
 
-export default mongoose.model<IInstallation>('Installation', InstallationSchema)
+export const Installation = mongoose.model<IInstallation>(
+  'Installation',
+  InstallationSchema
+)

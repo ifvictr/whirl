@@ -49,4 +49,7 @@ const ChatMetadataSchema = new Schema({
   }
 })
 
-export default mongoose.model<IChatMetadata>('ChatMetadata', ChatMetadataSchema)
+export const ChatMetadata = mongoose.model<IChatMetadata>(
+  'ChatMetadata',
+  ChatMetadataSchema
+)

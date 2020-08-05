@@ -4,9 +4,9 @@ import config from '../config'
 import { User } from '../models'
 import redis from '../redis'
 import { capitalize, getEmoji } from '../utils'
-import { ChatMetadata, IChatMetadata } from './'
+import { ChatMetadata, IChatMetadata } from '.'
 
-class Chat {
+export class Chat {
   static readonly MIN_SIZE = 2
 
   readonly id: string
@@ -178,5 +178,3 @@ class Chat {
     return new Chat(chatId, teamId)
   }
 }
-
-export default Chat

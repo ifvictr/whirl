@@ -2,7 +2,14 @@
     <img alt="Whirl" width="128" src="https://files.ifvictr.com/2020/06/whirl.png" />
 </p>
 <h1 align="center">Whirl</h1>
-<p align="center"><i>Fun, anonymous chats with random members of your Slack!</i></p>
+<p align="center">
+    <i>Fun, anonymous chats with random members of your Slack!</i>
+    <br />
+    <br />
+    <a href="https://whirl.ifvictr.com/slack/install">
+        <img alt="Add to Slack" add="" to="" slack""="" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" />
+    </a>
+</p>
 
 <p align="center">
     <img alt="Whirl home tab" width="600" src="https://files.ifvictr.com/2020/08/whirl_home.png" />

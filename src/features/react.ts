@@ -1,8 +1,7 @@
 import { App } from '@slack/bolt'
-import { User } from '../models'
 
 export default (app: App) => {
-  app.event('reaction_added', async ({ client, event }) => {
+  app.event('reaction_added', async ({ client, context, event }) => {
     // Ensure the event contains a ReactionMessageItem.
     if (!('channel' in event.item)) {
       return
@@ -13,7 +12,7 @@ export default (app: App) => {
       return
     }
 
-    const user = await User.get(event.user)
+    const user = await context.manager.getUser(event.user)
     if (!user) {
       return
     }

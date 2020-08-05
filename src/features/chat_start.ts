@@ -1,9 +1,7 @@
 import { App, BlockButtonAction } from '@slack/bolt'
-import { User } from '../models'
-import pool from '../pool'
 
 export default (app: App) => {
-  app.action('chat_start', async ({ ack, action, body, client }) => {
+  app.action('chat_start', async ({ ack, action, body, client, context }) => {
     await ack()
 
     // Ensure the action is a BlockButtonAction.
@@ -12,7 +10,7 @@ export default (app: App) => {
     }
     body = body as BlockButtonAction
 
-    const user = await User.get(body.user.id)
+    const user = await context.manager.getUser(body.user.id)
     if (!user) {
       return
     }
@@ -46,9 +44,11 @@ export default (app: App) => {
     }
 
     // Attempt to create a chat. If that fails, add the user to the pool.
-    const newChat = await pool.attemptToCreateChat(body.user.id)
+    const newChat = await context.manager
+      .getPool()
+      .attemptToCreateChat(body.user.id)
     if (!newChat) {
-      await pool.add(body.user.id)
+      await context.manager.getPool().add(body.user.id)
       await client.chat.postMessage({
         channel: body.user.id,
         text:

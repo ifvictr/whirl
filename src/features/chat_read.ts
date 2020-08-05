@@ -9,12 +9,12 @@ interface ConversationsHistoryResult extends WebAPICallResult {
 }
 
 export default (app: App) => {
-  app.event('app_home_opened', async ({ client, event }) => {
+  app.event('app_home_opened', async ({ client, context, event }) => {
     if (event.tab !== 'messages') {
       return
     }
 
-    const user = await User.get(event.user)
+    const user = await context.manager.getUser(event.user)
     if (!user) {
       return
     }
@@ -37,7 +37,7 @@ export default (app: App) => {
         continue
       }
 
-      const member = (await User.get(memberId)) as User
+      const member = (await context.manager.getUser(memberId)) as User
       const dmChannelId = (await member.getDmChannelId()) as string
 
       // Update the read receipt so it's on the latest message in the channel

@@ -1,5 +1,4 @@
 import { WebClient } from '@slack/web-api'
-import randomatic from 'randomatic'
 import { ChatPrompt } from '../blocks'
 import config from '../config'
 import { User } from '../models'
@@ -11,11 +10,13 @@ class Chat {
   static readonly MIN_SIZE = 2
 
   readonly id: string
+  readonly teamId: string
   readonly key: string
 
-  constructor(id: string) {
+  constructor(id: string, teamId: string) {
     this.id = id
-    this.key = `chat:${this.id}`
+    this.teamId = teamId
+    this.key = `chat:${this.teamId}_${this.id}`
   }
 
   async delete() {
@@ -62,8 +63,8 @@ class Chat {
     return redis
       .multi()
       .sadd(`${this.key}:members`, userId)
-      .hset(`user:${userId}`, 'chat_id', this.id)
-      .hset(`user:${userId}`, 'noun', noun)
+      .hset(`user:${this.teamId}_${userId}`, 'chat_id', this.id)
+      .hset(`user:${this.teamId}_${userId}`, 'noun', noun)
       .incr('counter:active_users')
       .exec()
   }
@@ -72,9 +73,9 @@ class Chat {
     let commands = redis
       .multi()
       .srem(`${this.key}:members`, userId)
-      .hdel(`user:${userId}`, 'chat_id')
-      .hdel(`user:${userId}`, 'noun')
-      .del(`user:${userId}:last_read_message_ids`)
+      .hdel(`user:${this.teamId}_${userId}`, 'chat_id')
+      .hdel(`user:${this.teamId}_${userId}`, 'noun')
+      .del(`user:${this.teamId}_${userId}:last_read_message_ids`)
       .decr('counter:active_users')
 
     // Remove the user from the other members' last read message IDs
@@ -83,7 +84,10 @@ class Chat {
         continue
       }
 
-      commands = commands.hdel(`user:${memberId}:last_read_message_ids`, userId)
+      commands = commands.hdel(
+        `user:${this.teamId}_${memberId}:last_read_message_ids`,
+        userId
+      )
     }
 
     return commands.exec()
@@ -109,7 +113,7 @@ class Chat {
   async sendIntroMessages(client: WebClient) {
     const members = await this.getMembers()
     for (const memberId of members) {
-      const member = (await User.get(memberId)) as User
+      const member = (await User.get(memberId, this.teamId)) as User
 
       // Send intro message to everyone but the member being introduced
       const noun = (await member.getNoun()) as string
@@ -159,41 +163,16 @@ class Chat {
     await chatMetadata.save()
   }
 
-  static async create(size: number = Chat.MIN_SIZE) {
-    // TODO: Guarantee the ID is unique within the DB and Redis cache
-    const randomId = randomatic('A0', 10)
-    const startedAt = Date.now()
-
-    // Create the base chat representation in Redis
-    const newChat = new Chat(randomId)
-    await redis
-      .multi()
-      .hset(newChat.key, 'created_at', Math.floor(startedAt / 1000)) // UNIX timestamp
-      .hset(newChat.key, 'message_count', 0)
-      .incr('counter:active_chats')
-      .incr('counter:total_chats')
-      .exec()
-
-    // Store the base metadata in Mongo
-    await ChatMetadata.create({
-      _id: randomId,
-      startedAt,
-      size
-    })
-
-    return newChat
+  static async exists(chatId: string, teamId: string) {
+    return !!(await redis.exists(`chat:${teamId}_${chatId}`))
   }
 
-  static async exists(chatId: string) {
-    return !!(await redis.exists(`chat:${chatId}`))
-  }
-
-  static async get(chatId: string) {
-    if (!(await Chat.exists(chatId))) {
+  static async get(chatId: string, teamId: string) {
+    if (!(await Chat.exists(chatId, teamId))) {
       return null
     }
 
-    return new Chat(chatId)
+    return new Chat(chatId, teamId)
   }
 }
 

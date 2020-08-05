@@ -12,8 +12,8 @@ interface ChatPostMessageResult extends WebAPICallResult {
 }
 
 export default (app: App) => {
-  app.message(channelType('im'), async ({ client, event }) => {
-    const user = await User.get(event.user)
+  app.message(channelType('im'), async ({ client, context, event }) => {
+    const user = await context.manager.getUser(event.user)
     if (!user) {
       return
     }
@@ -63,7 +63,7 @@ export default (app: App) => {
         continue
       }
 
-      const member = (await User.get(memberId)) as User
+      const member = (await context.manager.getUser(memberId)) as User
       const dmChannelId = (await member.getDmChannelId()) as string
 
       // Send message with pseudonym, then update the read receipt so it's on
@@ -92,8 +92,8 @@ export default (app: App) => {
   app.message(
     channelType('im'),
     subtype('message_changed'),
-    async ({ client, event }) => {
-      const user = await User.get(event.message.user)
+    async ({ client, context, event }) => {
+      const user = await context.manager.getUser(event.message.user)
       if (!user) {
         return
       }

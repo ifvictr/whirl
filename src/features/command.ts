@@ -1,13 +1,12 @@
 import { App } from '@slack/bolt'
 import { ChatPrompt } from '../blocks'
-import { Chat, User } from '../models'
-import pool from '../pool'
+import { Chat } from '../models'
 
 export default (app: App) => {
   app.command('/end', async ({ ack, client, command, context, respond }) => {
     await ack()
 
-    const user = await User.get(command.user_id)
+    const user = await context.manager.getUser(command.user_id)
     if (!user) {
       await respond(
         `You need to visit your DM with <@${context.botUserId}> first to use this command.`
@@ -46,7 +45,7 @@ export default (app: App) => {
   app.command('/next', async ({ ack, client, command, context, respond }) => {
     await ack()
 
-    const user = await User.get(command.user_id)
+    const user = await context.manager.getUser(command.user_id)
     if (!user) {
       await respond(
         `You need to visit your DM with <@${context.botUserId}> first to use this command.`
@@ -78,9 +77,11 @@ export default (app: App) => {
     }
 
     // Attempt to create a chat. If that fails, add the user to the pool.
-    const newChat = await pool.attemptToCreateChat(command.user_id)
+    const newChat = await context.manager
+      .getPool()
+      .attemptToCreateChat(command.user_id)
     if (!newChat) {
-      await pool.add(command.user_id)
+      await context.manager.getPool().add(command.user_id)
       await client.chat.postMessage({
         channel: command.user_id,
         text:

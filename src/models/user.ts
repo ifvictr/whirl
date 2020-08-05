@@ -3,11 +3,13 @@ import { Chat } from './'
 
 class User {
   readonly id: string
+  readonly teamId: string
   readonly key: string
 
-  constructor(id: string) {
+  constructor(id: string, teamId: string) {
     this.id = id
-    this.key = `user:${id}`
+    this.teamId = teamId
+    this.key = `user:${teamId}_${id}`
   }
 
   async getCurrentChat() {
@@ -16,7 +18,7 @@ class User {
       return null
     }
 
-    return Chat.get(chatId)
+    return Chat.get(chatId, this.teamId)
   }
 
   async getCurrentChatId() {
@@ -56,8 +58,8 @@ class User {
     await currentChat.removeMember(this.id)
   }
 
-  static async create(userId: string, dmChannelId: string) {
-    const newUser = new User(userId)
+  static async create(userId: string, teamId: string, dmChannelId: string) {
+    const newUser = new User(userId, teamId)
     await redis
       .multi()
       .hset(newUser.key, 'dm_channel_id', dmChannelId)
@@ -67,16 +69,16 @@ class User {
     return newUser
   }
 
-  static async exists(userId: string) {
-    return !!(await redis.exists(`user:${userId}`))
+  static async exists(userId: string, teamId: string) {
+    return !!(await redis.exists(`user:${teamId}_${userId}`))
   }
 
-  static async get(userId: string) {
-    if (!(await User.exists(userId))) {
+  static async get(userId: string, teamId: string) {
+    if (!(await User.exists(userId, teamId))) {
       return null
     }
 
-    return new User(userId)
+    return new User(userId, teamId)
   }
 }
 

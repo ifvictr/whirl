@@ -1,6 +1,5 @@
 import { App } from '@slack/bolt'
 import { HomeLayout } from '../blocks'
-import { User } from '../models'
 import redis from '../redis'
 
 const COUNTER_KEYS = [
@@ -12,13 +11,13 @@ const COUNTER_KEYS = [
 ]
 
 export default (app: App) => {
-  app.event('app_home_opened', async ({ client, event }) => {
+  app.event('app_home_opened', async ({ client, context, event }) => {
     if (event.tab !== 'home') {
       return
     }
 
     // Get the user's chat status to display the appropriate button
-    const user = await User.get(event.user)
+    const user = await context.manager.getUser(event.user)
     const isInChat = user !== null && (await user.isInChat())
 
     // Fetch the latest stats to display to the user

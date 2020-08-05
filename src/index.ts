@@ -2,7 +2,7 @@ import { App } from '@slack/bolt'
 import mongoose from 'mongoose'
 import config from './config'
 import * as features from './features'
-import Manager from './manager'
+import { addManagerContext } from './middlewares'
 import { Installation, IInstallation } from './models'
 
 const init = async () => {
@@ -50,6 +50,11 @@ const init = async () => {
     }
   })
 
+  // Load global middleware
+  // TODO: Handle types properly so we don't have to ignore
+  // @ts-ignore
+  app.use(addManagerContext)
+
   // Load feature modules
   for (const [featureName, handler] of Object.entries(features)) {
     handler(app)
@@ -60,13 +65,6 @@ const init = async () => {
   console.log(
     `Loaded ${featuresCount} feature${featuresCount === 1 ? '' : 's'}`
   )
-
-  // TODO: move this elsewhere
-  app.use(async ({ body, context, next }) => {
-    // @ts-ignore
-    context.manager = new Manager(body.team_id || body.team.id)
-    await next!()
-  })
 
   // Start receiving events
   await app.start(config.port)

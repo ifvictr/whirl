@@ -60,22 +60,24 @@ class Chat {
   }
 
   async addMember(userId: string, noun: string) {
+    const userKey = `user:${this.teamId}_${userId}`
     return redis
       .multi()
       .sadd(`${this.key}:members`, userId)
-      .hset(`user:${this.teamId}_${userId}`, 'chat_id', this.id)
-      .hset(`user:${this.teamId}_${userId}`, 'noun', noun)
+      .hset(userKey, 'chat_id', this.id)
+      .hset(userKey, 'noun', noun)
       .incr('counter:active_users')
       .exec()
   }
 
   async removeMember(userId: string) {
+    const userKey = `user:${this.teamId}_${userId}`
     let commands = redis
       .multi()
       .srem(`${this.key}:members`, userId)
-      .hdel(`user:${this.teamId}_${userId}`, 'chat_id')
-      .hdel(`user:${this.teamId}_${userId}`, 'noun')
-      .del(`user:${this.teamId}_${userId}:last_read_message_ids`)
+      .hdel(userKey, 'chat_id')
+      .hdel(userKey, 'noun')
+      .del(`${userKey}:last_read_message_ids`)
       .decr('counter:active_users')
 
     // Remove the user from the other members' last read message IDs
@@ -84,10 +86,8 @@ class Chat {
         continue
       }
 
-      commands = commands.hdel(
-        `user:${this.teamId}_${memberId}:last_read_message_ids`,
-        userId
-      )
+      const memberKey = `user:${this.teamId}_${memberId}`
+      commands = commands.hdel(`${memberKey}:last_read_message_ids`, userId)
     }
 
     return commands.exec()

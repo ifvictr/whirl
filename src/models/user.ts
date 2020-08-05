@@ -1,5 +1,5 @@
 import redis from '../redis'
-import { Chat } from './'
+import { Chat } from '.'
 
 class User {
   readonly id: string

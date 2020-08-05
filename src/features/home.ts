@@ -22,7 +22,7 @@ export default (app: App) => {
 
     // Fetch the latest stats to display to the user
     const rawCounts = (await Promise.all(
-      COUNTER_KEYS.map(key => redis.get(`count:${key}`))
+      COUNTER_KEYS.map(key => redis.get(`counter:${key}`))
     )) as string[]
     const [
       activeChatCount,

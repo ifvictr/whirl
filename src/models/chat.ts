@@ -23,7 +23,7 @@ class Chat {
       .multi()
       .del(this.key)
       .del(`${this.key}:members`)
-      .decr('count:active_chats')
+      .decr('counter:active_chats')
       .exec()
   }
 
@@ -64,7 +64,7 @@ class Chat {
       .sadd(`${this.key}:members`, userId)
       .hset(`user:${userId}`, 'chat_id', this.id)
       .hset(`user:${userId}`, 'noun', noun)
-      .incr('count:active_users')
+      .incr('counter:active_users')
       .exec()
   }
 
@@ -75,7 +75,7 @@ class Chat {
       .hdel(`user:${userId}`, 'chat_id')
       .hdel(`user:${userId}`, 'noun')
       .del(`user:${userId}:last_read_message_ids`)
-      .decr('count:active_users')
+      .decr('counter:active_users')
 
     // Remove the user from the other members' last read message IDs
     for (const memberId of await this.getMembers()) {
@@ -170,8 +170,8 @@ class Chat {
       .multi()
       .hset(newChat.key, 'created_at', Math.floor(startedAt / 1000)) // UNIX timestamp
       .hset(newChat.key, 'message_count', 0)
-      .incr('count:active_chats')
-      .incr('count:total_chats')
+      .incr('counter:active_chats')
+      .incr('counter:total_chats')
       .exec()
 
     // Store the base metadata in Mongo

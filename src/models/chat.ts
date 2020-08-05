@@ -43,7 +43,7 @@ class Chat {
     if (messageCount >= config.chatMetadataThreshold) {
       await this.saveMetadata()
     } else {
-      await ChatMetadata.findByIdAndDelete(this.id)
+      await ChatMetadata.deleteOne({ _id: this.id, teamId: this.teamId })
     }
 
     // Delete from Redis' memory
@@ -157,7 +157,10 @@ class Chat {
   }
 
   private async saveMetadata() {
-    const chatMetadata = (await ChatMetadata.findById(this.id)) as IChatMetadata
+    const chatMetadata = (await ChatMetadata.findOne({
+      _id: this.id,
+      teamId: this.teamId
+    })) as IChatMetadata
     chatMetadata.endedAt = new Date(Date.now())
     chatMetadata.messageCount = await this.getMessageCount()
     await chatMetadata.save()

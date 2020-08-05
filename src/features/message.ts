@@ -86,7 +86,7 @@ export default (app: App) => {
 
     // Increment the message counters
     await redis.hincrby(currentChat.key, 'message_count', 1)
-    await redis.incr('counter:total_messages_sent')
+    await redis.incr(`counter:${currentChat.teamId}:total_messages_sent`)
   })
 
   app.message(

@@ -24,7 +24,7 @@ class Chat {
       .multi()
       .del(this.key)
       .del(`${this.key}:members`)
-      .decr('counter:active_chats')
+      .decr(`counter:${this.teamId}:active_chats`)
       .exec()
   }
 
@@ -66,7 +66,7 @@ class Chat {
       .sadd(`${this.key}:members`, userId)
       .hset(userKey, 'chat_id', this.id)
       .hset(userKey, 'noun', noun)
-      .incr('counter:active_users')
+      .incr(`counter:${this.teamId}:active_users`)
       .exec()
   }
 
@@ -78,7 +78,7 @@ class Chat {
       .hdel(userKey, 'chat_id')
       .hdel(userKey, 'noun')
       .del(`${userKey}:last_read_message_ids`)
-      .decr('counter:active_users')
+      .decr(`counter:${this.teamId}:active_users`)
 
     // Remove the user from the other members' last read message IDs
     for (const memberId of await this.getMembers()) {

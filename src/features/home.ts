@@ -11,7 +11,7 @@ const COUNTER_KEYS = [
 ]
 
 export default (app: App) => {
-  app.event('app_home_opened', async ({ client, context, event }) => {
+  app.event('app_home_opened', async ({ body, client, context, event }) => {
     if (event.tab !== 'home') {
       return
     }
@@ -22,7 +22,7 @@ export default (app: App) => {
 
     // Fetch the latest stats to display to the user
     const rawCounts = (await Promise.all(
-      COUNTER_KEYS.map(key => redis.get(`counter:${key}`))
+      COUNTER_KEYS.map(key => redis.get(`counter:${body.team_id}:${key}`))
     )) as string[]
     const [
       activeChatCount,

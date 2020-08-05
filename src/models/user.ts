@@ -63,7 +63,7 @@ class User {
     await redis
       .multi()
       .hset(newUser.key, 'dm_channel_id', dmChannelId)
-      .incr('counter:total_users')
+      .incr(`counter:${teamId}:total_users`)
       .exec()
 
     return newUser

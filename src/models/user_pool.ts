@@ -84,8 +84,8 @@ class UserPool {
       .multi()
       .hset(newChat.key, 'created_at', Math.floor(startedAt / 1000)) // UNIX timestamp
       .hset(newChat.key, 'message_count', 0)
-      .incr('counter:active_chats')
-      .incr('counter:total_chats')
+      .incr(`counter:${this.teamId}:active_chats`)
+      .incr(`counter:${this.teamId}:total_chats`)
       .exec()
 
     // Store the base metadata in Mongo

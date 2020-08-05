@@ -1,5 +1,4 @@
-import { Chat, User } from './models'
-import Pool from './pool'
+import { Chat, User, UserPool } from './models'
 
 class Manager {
   readonly teamId: string
@@ -9,7 +8,7 @@ class Manager {
   }
 
   getPool() {
-    return new Pool(this.teamId)
+    return new UserPool(this.teamId)
   }
 
   getChat(id: string) {

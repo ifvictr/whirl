@@ -1,10 +1,10 @@
 import sampleSize from 'lodash.samplesize'
 import randomatic from 'randomatic'
-import nouns from './data/nouns.json'
-import { Chat, ChatMetadata, IChatMetadata } from './models'
-import redis from './redis'
+import nouns from '../data/nouns.json'
+import redis from '../redis'
+import { Chat, ChatMetadata, IChatMetadata } from '.'
 
-class Pool {
+class UserPool {
   readonly teamId: string
   readonly key: string
 
@@ -99,4 +99,4 @@ class Pool {
   }
 }
 
-export default Pool
+export default UserPool

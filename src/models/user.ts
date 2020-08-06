@@ -46,7 +46,7 @@ export class User {
   }
 
   async isInPool() {
-    return !!(await redis.sismember('user_pool', this.id))
+    return !!(await redis.sismember(`user_pool:${this.teamId}`, this.id))
   }
 
   async leave() {

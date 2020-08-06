@@ -10,14 +10,20 @@
     }
   ],
   "env": {
-    "SLACK_BOT_TOKEN": {
-      "description": "Bot user’s OAuth access token. Usually starts with `xoxb-`."
+    "DATABASE_URL": {
+      "description": "Your MongoDB database’s URL. Used to store chat metadata."
+    },
+    "SLACK_CLIENT_ID": {
+      "description": "ID of the app to use in OAuth requests."
+    },
+    "SLACK_CLIENT_SECRET": {
+      "description": "Secret value to use when making OAuth requests."
     },
     "SLACK_SIGNING_SECRET": {
       "description": "Signing secret from Slack used to confirm source of incoming messages."
     },
-    "DATABASE_URL": {
-      "description": "Your MongoDB database’s URL. Used to store chat metadata."
+    "SLACK_STATE_SECRET": {
+      "description": "Additional secret value to secure your app."
     },
     "CHAT_METADATA_THRESHOLD": {
       "description": "The minimum amount of messages needed for a chat’s metadata to be saved.",

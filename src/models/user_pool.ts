@@ -38,11 +38,19 @@ export class UserPool {
 
     // Generate the nouns that will be used
     const randomNouns = sampleSize(nouns, size)
+    const membersMetadata = []
 
-    await newChat.addMember(initiatingUserId, randomNouns[0])
+    // Add the initiating user to the chat
+    const initiatorNoun = randomNouns[0]
+    await newChat.addMember(initiatingUserId, initiatorNoun)
     await this.remove(initiatingUserId)
 
-    const membersMetadata = []
+    membersMetadata.push({
+      id: initiatingUserId,
+      noun: initiatorNoun
+    })
+
+    // Keep adding random users from the pool to this chat until its at the size
     for (let i = 0; i < membersNeeded; i++) {
       const randomUserId = (await redis.srandmember(this.key)) as string
 

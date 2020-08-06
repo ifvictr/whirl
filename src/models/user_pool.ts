@@ -64,9 +64,10 @@ export class UserPool {
     }
 
     // Add user IDs and pseudonyms to metadata
-    const newChatMetadata = (await ChatMetadata.findById(
-      newChat.id
-    )) as IChatMetadata
+    const newChatMetadata = (await ChatMetadata.findOne({
+      _id: newChat.id,
+      teamId: this.teamId
+    })) as IChatMetadata
     newChatMetadata.members = membersMetadata
     await newChatMetadata.save()
 

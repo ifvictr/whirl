@@ -32,7 +32,7 @@
     "@slack/web-api": "^5.11.0",
     "ioredis": "^4.17.3",
     "lodash.samplesize": "^4.2.0",
-    "mongoose": "^5.9.24",
+    "mongoose": "^5.13.15",
     "randomatic": "^3.1.1"
   },
   "devDependencies": {
